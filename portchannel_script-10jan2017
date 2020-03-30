@@ -1,0 +1,71 @@
+$fileEntries = [IO.Directory]::GetFiles("c:\Users\SamuelH\Desktop\nov-rtsu");
+$numfiles = 0
+ $file_ctr = 0
+ $exclam_ctr = 0
+ $total = 0
+ $total_shut = 0
+ $portch_ctr = 0
+
+foreach ($content in $fileEntries)
+{ $content2 = Get-Content $content
+ Write-host "*******************************************"    
+
+#$content = Get-Content("c:\Users\SamuelH\Desktop\L2_devices\K-1100-119-T1-3650-2.kwaj-Running.Config")
+ $int_fnd=0
+ $file_ctr = $file_ctr +1
+ $count_int = 0
+ $portch = " "
+ $sw_ac_vl = " "
+ $mac_stick = " "
+ $stick_int = " "
+ $stick_ctr = 0
+ 
+ foreach ($line in $content2)
+    {
+       
+        switch -regex ($line)
+        {"^hostname [\w+$]" {$hostname = $line.Substring(9);Write-host $file_ctr; Write-Host $hostname;Write-host "*******************************************" } #grabs the hostname
+         "^version" {$version = $line.Substring(8)} #grabs the version
+
+         "^enable secret 5" {$v3012 = "NF"; $V3143 = "NF"} #password protected;nondefault
+         }
+
+         if ($line -match "^interface (tengiga|vlan|gig|ether|fast)") {
+            $int_fnd = $int_fnd + 1;$exclam_ctr = 0; $stick_ctr = 0; $count_access = 0;$shut = 0; $portch = " "
+            $stick_mac_ctr = 0}
+         if ($line -match "^interface (tengiga|vlan|gig|ether|fast)") {
+            $stick_int = $line}
+         if ($line -match "^interface port-channel") {
+            $portch_ctr = $portch_ctr + 1}
+         if  ($int_fnd -ge 1 -and $exclam_ctr -lt 1) {
+            switch -Regex ($line)
+            { "^ switchport access vlan \d*$" {$sw_ac_vl = $line.substring(23); $sw_ac_vl = $sw_ac_vl.Trim()}
+              #"^ switchport mode access" {$count_int = $count_int +1; $count_access = $count_access + 1}
+              "^ channel-group" {$portch = $line; $count_int = $count_int +1; $count_access = $count_access + 1}
+              "^ shutdown" {$shut = $shut + 1}
+              "^ switchport port-security mac-address sticky" {$stick_ctr = $stick_ctr + 1}
+              "^\!" {$exclam_ctr = $exclam_ctr +1}
+             }
+         if ($line -eq "!" -and $count_access -eq 1 -and $shut -eq 0) {
+            $stick_mac_ctr = $stick_mac_ctr + 1;
+            write-host $stick_int;Write-Host $portch; $total = $total + 1
+         }
+
+         if ($line -eq "!" -and $stick_ctr -eq 0 -and $count_access -eq 1 -and $shut -eq 1) {
+            $stick_mac_ctr = $stick_mac_ctr + 1;
+            $total_shut = $total_shut + 1
+         }
+
+         if ($line -eq "!" -and $exclam_ctr -eq 1 -and $int_fnd -gt 0 -and $stick_ctr -eq 0 -and $count_access -eq 1 -and $shut -eq 1 -and $stick_mac_ctr -eq 0) {
+            Write-Host "---------------------------------"
+         }      
+           
+            }
+         } 
+        
+
+     }
+write-host " "
+Write-Host "================================================================================="
+Write-Host "the total number of port channels is $portch_ctr"
+write-host "the total number of interfaces with etherchannel configurations" $total
