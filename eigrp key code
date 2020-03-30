@@ -1,0 +1,165 @@
+#**** STIG Check (re-write) ****
+
+#read each file in the folder
+$ReadFiles = [IO.Directory]::GetFiles("c:\Users\SamuelH\Desktop\rts-u");
+
+#counter for each file in the folder
+$FileCount = 0
+
+
+#code to run on each file in the folder
+foreach ($Content in $ReadFiles)
+{
+    #opens the file
+    $RawData = get-content $Content
+
+    #start of a new file
+    Write-host "=================================="
+
+    #counters
+    $MOTDBanner = 0
+    $LOGINBanner = 0
+    $EXECBanner = 0
+    $KeyFoundA = 0
+    $KeyDate1A = " "
+    $KeyDate2A = " "
+    $KeyExceedA = 0
+    $KeyDiffA = 0
+    $KeyFoundB = 0
+    $KeyDate1B = " "
+    $KeyDate2B = " "
+    $KeyExceedB = 0 
+    $KeyDiffB = 0
+
+    
+
+
+     foreach ($line in $RawData)
+    {
+        switch -Regex($line)
+        {
+            
+            "^hostname [\w+$]" {$hostname = $line.Substring(9);Write-Host "**********************************"; Write-Host $hostname} #checks for hostname
+            "^version" {$version = $line.Substring(8)} #grabs the version
+
+        }
+
+
+            #V-14667: Rotating keys expire less than 180 days ***2 SPACES***
+            #Find difference in current date and accept key date
+        if ($line -match "^  accept-lifetime .+\d+$" -and $KeyFoundA -eq 0)
+        {
+            $KeyFoundA = $KeyFoundA + 1
+            $KeyDate1A = $line.Substring(27, 11)
+            $KeyDate1A = [datetime]$KeyDate1A
+            $KeyDate2A = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2A = $Matches[0]
+            #write-host $KeyDate1A
+
+            $KeyDate2A= [datetime]$KeyDate2A
+            $KeyDiffA = $KeyDate2A.Date - $KeyDate1A.Date
+            #write-host $KeyDate2A
+            write-host "The difference between the dates are:"$KeyDiffA.Days
+
+            if ($KeyDiffA -gt 180)
+            { $KeyExceedA = 1; Write-host "Key exceeds 180 days"}
+            
+            if ($KeyDiffA -lt 0)
+            { $KeyExpiredA = 1}      
+        }
+
+        if ($line -match "^  accept-lifetime .+\d+$" -and $KeyFoundA -eq 1)
+        {
+            $KeyFoundB = $KeyFoundB + 1
+            $KeyDate1B = $line.Substring(27, 11)
+            $KeyDate1B = [datetime]$KeyDate1B
+            $KeyDate2B = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2B = $Matches[0]
+            #write-host $KeyDate1B
+
+            $KeyDate2B= [datetime]$KeyDate2B
+            $KeyDiffB = $KeyDate2B.Date - $KeyDate1B.Date
+            #write-host $KeyDate2B
+            write-host "The difference between the dates are:"$KeyDiffB.Days
+
+            if ($KeyDiffB -gt 180)
+            { $KeyExceedB = 1; Write-host "Key exceeds 180 days"}
+            
+            if ($KeyDiffB -lt 0)
+            { $KeyExpiredB = 1} 
+            
+        if ($KeyDate1B -lt $KeyDate2A)
+        {write-host "compliant with overlap"}
+        
+        if ($KeyDate1B -gt $KeyDate2A)
+        {Write-Host "not compliant with overlap"}   
+        } 
+
+
+
+
+
+            #V-14667: Rotating keys expire less than 180 days ***3 SPACES***
+            #Find difference in current date and accept key date
+
+        if ($line -match "^   accept-lifetime .+\d+$" -and $KeyFoundA -eq 0)
+        {
+            $KeyFoundA = $KeyFoundA + 1
+            $KeyDate1A = $line.Substring(27, 12)
+            $KeyDate1A = [datetime]$KeyDate1A
+            $KeyDate2A = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2A = $Matches[0]
+            write-host $KeyDate1A
+
+            $KeyDate2A= [datetime]$KeyDate2A
+            $KeyDiffA = $KeyDate2A.Date - $KeyDate1A.Date
+            write-host $KeyDate2A
+            write-host "The difference between the dates are:"$KeyDiffA.Days
+
+            if ($KeyDiffA -gt 180)
+            { $KeyExceedA = 1; Write-host "Key exceeds 180 days"}
+            
+            if ($KeyDiffA -lt 0)
+            { $KeyExpiredA = 1}      
+        }
+
+        if ($line -match "^   accept-lifetime .+\d+$" -and $KeyFoundA -eq 1)
+        {
+            $KeyFoundB = $KeyFoundB + 1
+            $KeyDate1B = $line.Substring(27, 12)
+            $KeyDate1B = [datetime]$KeyDate1B
+            $KeyDate2B = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2B = $Matches[0]
+            write-host $KeyDate1B
+
+            $KeyDate2B= [datetime]$KeyDate2B
+            $KeyDiffB = $KeyDate2B.Date - $KeyDate1B.Date
+            write-host $KeyDate2B
+            write-host "The difference between the dates are:"$KeyDiffB.Days
+
+            if ($KeyDiffB -gt 180)
+            { $KeyExceedB = 1; Write-host "Key exceeds 180 days"}
+            
+            if ($KeyDiffB -lt 0)
+            { $KeyExpiredB = 1} 
+            
+        if ($KeyDate1B -lt $KeyDate2A)
+        {write-host "compliant with overlap"}
+        
+        if ($KeyDate1B -gt $KeyDate2A)
+        {Write-Host "not compliant with overlap"}   
+        } 
+
+
+
+
+
+    }
+
+ 
+
+
+
+
+
+}
