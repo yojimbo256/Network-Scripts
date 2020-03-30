@@ -1,0 +1,1369 @@
+#read each file in the folder
+$ReadFiles = [IO.Directory]::GetFiles("c:\Users\SamuelH\Desktop\rts-u");
+
+#counter for each file in the folder
+$FileCount = 0
+
+
+#code to run on each file in the folder
+foreach ($Content in $ReadFiles)
+{
+    #opens the file
+    $RawData = get-content $Content
+
+
+    $hostname = " "
+    $version = " "
+    $devtype = " "
+    $KeyDate1A =  0
+    $KeyDate1S =  0
+    $ACLDenyAll = 0
+    $ACLCounter = 0
+    $ACLDenyCounter = 0
+    $ACLCounter2 = 0
+    $ACLDenyCounter2 = 0
+    $LoginBanner = 0
+    $EnableSecret = 0
+    $AAAuthentication = 0
+    $VTYFound = 0
+    $VTYFilter = 0
+    $VTYTimeoutFound = 0
+    $VTYTimeoutCtr = 0
+    $VTYTimeoutExceed = 0
+    $DomainLookup = 0
+    $SNMPString = 0
+    $SNMPACL = 0
+    $EIGRPFound = 0
+    $EIGRPModeCtr = 0
+    $EIGRPKeyChnCtr = 0
+    $UserNameCount = 0
+    $Auth0 = 0
+    $Auth1 = 0
+    $Auth15 = 0
+    $AuthTotal = 0
+    $EnableSecret = 0
+    $PassEncryptTotal = 0
+    $SSHCheck = 0
+    $SCPCheck = 0
+    $NoHTTPCheck = 0
+    $HTTPCheck = 0
+    $NoSecHTTPCheck = 0
+    $SecHttpCheck = 0
+    $FIPSTotal = 0
+    $SmallServers = 0
+    $IPFinger = 0
+    $AutoLoad1 = 0
+    $IPSoureRte = 0
+    $IPDirected = 0
+    $IPBoot = 0
+    $CONFound = 0
+    $CONFilter = 0
+    $CONTimeoutFound = 0
+    $CONTimeoutCtr = 0
+    $CONTimeoutExceed = 0
+    $AccessVlan1 = 0
+    $TrunkAllVlan1 = 0
+    $IntMatch = 0
+    $ShutVL999 = 0
+    $SwPtTrkAll = 0
+    $Shut = 0
+    $sw_ac_vl = 0
+    $NativeVlan55 = 0
+    $NativeChk = 0
+    $NativeVal = 0
+    $LogTrap = 0
+    $SSHTimeout = 0
+    $SSHTimeFound = 0
+    $PadService = 0
+    $KeepAlives = 0
+    $IPIdentd = 0
+    $GratARPs = 0
+    $SwPtTrkEn = 0
+    $SynWait = 0
+    $SynWaitTime = 0
+    $LifeTimeKeyA = 0
+    $LifeTimeKeyS = 0
+    $RtrEigrp = 0
+    $AuxFound = 0
+    $AuxDisabled = 0
+    $KeyDiffA = 0
+    $KeyFoundA = 0
+    $KeyExceedA = 0
+    $KeyExpiredA = 0
+    $KeyDiffS = 0
+    $KeyFoundS = 0
+    $KeyExceedS = 0
+    $KeyExpiredS = 0
+    $BSDrEnabled = 0
+    $LoopTacRad = 0
+    $LoopSyslog = 0
+    $LoopNTP= 0
+    $LoopSNMP = 0
+    $FlowFound = 0
+    $LoopFlow = 0
+    $LoopTFTP = 0
+    $LoopFTP = 0
+    $SSHv2 = 0
+    $AAAServerGroup = 0
+    $AAASeverCount = 0
+    $EmergAccount = 0
+    $MgmtIntFound = 0
+    $MgmtIntIP = 0
+    $PortSec = 0
+    $PortMax = 0
+    $PortMaxSec = 0
+    $NTPServCount = 0
+    $CPPServPol = 0
+    $CallHome = 0
+    $MulticastR = 0
+    $MulticastFilter = 0 
+    
+    $V3000 = "O"
+    $V3008 = "NA"
+    $V3012 = "O"
+    $V3013 = "O"
+    $V3014 = "NF"
+    $V3020 = "O"
+    $V3034 = "NF"
+    $V3043 = "O"
+    $V3056 = "NF"
+    $V3057 = "O"
+    $V3058 = "NR"
+    $V3062 = "O"
+    $V3069 = "O"
+    $V3070 = "O"
+    $V3072 = "NR"
+    $V3078 = "NF"
+    $V3079 = "NF"
+    $V3080 = "NF"
+    $V3081 = "O"
+    $V3083 = "NF"
+    $V3085 = "NF"
+    $V3086 = "NF"
+    $V3143 = "O"
+    $V3160 = "NR"
+    $V3175 = "O"
+    $V3196 = "NR"
+    $V3210 = "O"
+    $V3966 = "O"
+    $V3967 = "NF"
+    $V3969 = "O"
+    $V3971 = "NF"
+    $V3972 = "NF"
+    $V3973 = "NF"
+    $V3984 = "NF"
+    $V4582 = "O"
+    $V4584 = "NF"
+    $V5611 = "O"
+    $V5612 = "O"
+    $V5613 = "NF"
+    $V5614 = "NF"
+    $V5615 = "O"
+    $V5616 = "NF"
+    $V5618 = "NF"
+    $V5622 = "NF"
+    $V5623 = "NF"
+    $V5624 = "NA"
+    $V5626 = "O"
+    $V5628 = "NF"
+    $V5645 = "NR"
+    $V5646 = "O"
+    $V7009 = "NA"
+    $V7011 = "NA"
+    $V14667 = "NA"
+    $V14669 = "NF"
+    $V14671 = "O"
+    $V14672 = "O"
+    $V14673 = "O"
+    $V14674 = "O"
+    $V14675 = "O"
+    $V14676 = "O"
+    $V14677 = "O"
+    $V14681 = "NA"
+    $V14693 = "NA"
+    $V14705 = "NA"
+    $V14707 = "NA"
+    $V14717 = "O"
+    $V15288 = "NA"
+    $V15432 = "O"
+    $V15434 = "O"
+    $V17754 = "NA"
+    $V17814 = "NA"
+    $V17815 = "NA"
+    $V17816 = "NA"
+    $V17817 = "NA"
+    $V17818 = "NA"
+    $V17819 = "NA"
+    $V17820 = "NA"
+    $V17821 = "NA"
+    $V17822 = "NA"
+    $V17823 = "NA"
+    $V17824 = "NA"
+    $V17825 = "NA"
+    $V17826 = "NA"
+    $V17827 = "NA"
+    $V17832 = "O"
+    $V17833 = "NR"
+    $V17834 = "NR"
+    $V17835 = "NA"
+    $V17836 = "NA"
+    $V17837 = "NA"
+    $V18522 = "NR"
+    $V18523 = "NR"
+    $V18544 = "NR"
+    $V18545 = "NR"
+    $V18565 = "NF"
+    $V18566 = "NF"
+    $V18790 = "NA"
+    $V19188 = "NA"
+    $V19189 = "NA"
+    $V23747 = "O"
+    $V28784 = "NF"
+    $V30577 = "NA"
+    $V30578 = "NA"
+    $V30617 = "NA"
+    $V30660 = "NA"
+    $V30736 = "NA"
+    $V30744 = "NA"
+    $V31285 = "NA"
+
+
+
+
+
+
+    foreach ($line in $RawData)
+    {
+
+        switch -Regex($line)
+        {                        
+            "^hostname [\w+$]" {$hostname = $line.Substring(9)} #checks for hostname
+            "^version" {$version = $line.Substring(8)} #grabs the version
+
+            #V-3013 results of login banner
+            "^banner login" {$LOGINBanner = 1} 
+
+            #V-3012,3143,4582: checks for password protection
+            "enable secret 5" {$EnableSecret = 1}
+            "aaa authentication login default group"{$AAAuthentication = 1}
+
+            #V-3020: checks for DNS servers
+            "^no ip domain-lookup"{$DomainLookup = 1}
+            "^no ip domain lookup"{$DomainLookup = 1}
+            "^ip name-server" {$DomainLookup = 1}
+                        
+            #V-3021,3210, 3043: checks the SNMP string
+            "^snmp-server group .+ v3 priv access 58" {$SNMPString = 1}
+            "^snmp-server group .+ v3 priv access ACL-FILTER-SNMP$" {$SNMPString = 1}
+            "^access-list 58" {$SNMPACL = 1}
+            "^ip access-list standard ACL-FILTER-SNMP$" {$SNMPACL = 1}
+
+            #V-3034: routing protocols use authentication
+            "^router eigrp" {$EIGRPFound = 1}
+            "^ ip authentication mode eigrp" {$EIGRPModeCtr = $EIGRPModeCtr + 1}
+            "^ ip authentication key-chain eigrp" {$EIGRPKeyChnCtr = $EIGRPKeyChnCtr + 1}
+
+            #V-3056,3966: check for group accounts
+            "^username .+ secret 5" {$UserNameCount = $UserNameCount + 1}
+
+            #V-3057: check priv level
+            "^aaa authorization commands 0" {$Auth0 = 1}
+            "^aaa authorization commands 1 " {$Auth1 = 1}
+            "^aaa authorization commands 15" {$Auth15 = 1}
+
+            #V3062: check for password encryption
+            "^service password-encryption" {$PassEncryptTotal = 1}
+
+            #V-3069: FIPS 140-2 compliance
+            "^ip ssh version 2" {$SSHCheck = 1}
+            "^ip scp server enable" {$SCPCheck = 1}
+            "^no ip http server" {$NoHTTPCheck = 1}
+            "^ip http server" {$HTTPCheck = -2}
+            "^no ip http secure-server" {$NoSecHTTPCheck = 1}
+            "^ip http secure-server" {$SecHttpCheck = 1}
+
+            #V-3078: TCP and UDP small servers
+            "^service tcp-small-servers" {$SmallServers = 1}
+            "^service udp-small-servers" {$SmallServers = 1}
+
+            #V-3079: IP finger
+            "^ip finger" {$IPFinger = 1}
+
+            #V-3080: Auto-loading
+            "^service config" {$AutoLoad1 = 1}
+            "^boot network" {$AutoLoad1 = 1}
+
+            #V-3081: No IP Source Routing
+            "^no ip source-route" {$IPSoureRte = 1}
+
+            #V-3083: IP Directed Broadcast
+            "^ip directed-broadcast" {$IPDirected = 1}
+
+            #V-3086: Boot service disabled
+            "^ip bootp server" {$IPBoot = 1}
+
+            #V-4584: log all messages except debugging
+            "^logging trap debugging" {$LogTrap = 1}
+            "^logging trap notifications" {$LogTrap =1}
+            "^logging trap warnings" {$LogTrap = 1}
+            "^logging trap errors" {$LogTrap = 1}
+            "^logging trap critical" {$LogTrap = 1}
+            "^logging trap alerts" {$LogTrap = 1}
+            "^logging trap emergencies" {$LogTrap = 1}
+
+            "^logging host" {$LogHost = $LogHost + 1}
+
+            #V-5612: ssh timeout 60secs or less
+            "^ip ssh time-out" {$SSHTimeFound = 1;$SSHTimeout = $line.Substring(16)}
+
+            #V-5614: pad service is disabled
+            "^service pad" {$PadService = 1}
+
+            #V-5615: tcp keep-a-lives
+            "^service tcp-keepalives-in" {$KeepAlives = 1}
+
+            #V-5616: identification support
+            "^ip identd"{$IPIdentd = 1}
+
+            #V-5618: gratuitous ARP disabled
+            "^ip gratuitous-arps" {$GratARPs = 1}
+
+            #V-5646: drop half opened connections
+            "^ip tcp synwait-time" {$SynWait = 1;$SynWaitTime = $line.Substring(20)}
+
+            #V-7009: infinite lifetime key
+            "^router eigrp" {$RtrEigrp = 1}
+            "accept-lifetime .+ infinite" {$LifeTimeKeyA = 1 }
+            "send-lifetime .+ infinite" {$LifeTimeKeyS = 1}
+
+            #V-14669: bsdr not disabled
+            "^ip rcmd rcp-enable" {$BSDrEnabled = 1}
+            "^ip rcmd rsh-enable" {$BSDrEnabled =1}
+
+            #V-14672: must use loopback as source address for TACACS and RADIUS traffic
+            "^ip tacacs source-interface Loopback" {$LoopTacRad = 1}
+            "^ ip tacacs source-interface Loopback" {$LoopTacRad = 1}
+            "^ip radius source-interface Loopback" {$LoopTacRad = 1}
+            
+            #V-14673: must use loopback as source address for SYSLOG traffic
+            "^logging source-interface Loopback" {$LoopSyslog = 1}
+
+            #V-14674: must use loopback as source address for NTP traffic
+            "^ntp source Loop" {$LoopNTP = 1}
+
+            #V-14675: must use loopback as source address for SNMP traffic
+            "^snmp-server trap-source Loopback" {$LoopSNMP = 1}
+
+            #V-14676 Netflow sourced from loopback
+            "^ip flow-export source Loopback" {$LoopFlow = 1}
+
+            #V-14677 must use loopback as source address for FTP/TFTP
+            "ip tftp source-interface Loopback" {$LoopTFTP = 1}
+            "ip ftp source-interface Loopback" {$LoopFTP = 1}
+
+            #V-14717 SSH version 2
+            "^ip ssh version 2" {$SSHv2 = 1}
+
+            #V-15434 emergency account authorization level
+            "^username .+ privilege 0 secret 5 .+" {$EmergAccount = 1}
+
+            #V-19188 Control Plane Protection
+            "^ service-policy input CON" {$CPPServPol = 1}
+
+            #V-23747 Two NTP servers
+            "^ntp server \d+\.\d+\.\d+\.\d+" {$NTPServCount = $NTPServCount + 1}
+
+            #V-28784 call home service
+            "^ service call-home" {$CallHome = 1}
+
+            #V-30577 PIM enabled on wrong interfaces
+            "^ip multicast-routing" {$MulticastR = 1}
+            "^ip multicast routing" {$MulticastR = 1}
+            "^ip multicast-routing distributed" {$MulticastR = 1}
+
+        }
+
+        #V-3000 compares the number of times 'deny' was found and 'deny log'
+        if ($line -match "^ip access-list extended")
+        { $ACLDenyAll = 1 }
+
+        if ($line -match "^ip access-list extended COPP")
+        { $ACLDenyAll = 2 }
+
+        if ($line -match "^ deny" -and $ACLDenyAll -eq 1)
+        { $ACLCounter = $ACLCounter + 1}
+
+        if ($line -match "^ deny .+ log$" -and $ACLDenyAll -eq 1)
+        { $ACLDenyCounter = $ACLDenyCounter + 1}
+
+        if ($line -match "^access-list \d+ deny .+$")
+        { $ACLCounter2 = $ACLCounter2 + 1}
+
+        if ($line -match "^access-list \d+ deny .+ log$")
+        { $ACLDenyCounter2 = $ACLDenyCounter2 + 1}
+
+        if ($line -match "!" -and $ACLDenyAll -ne 0)
+        { $ACLDenyAll = 0 }
+
+        #V-3014, V-5611: checks the management connections for timeout and acl filter
+        if ($line -match "^line vty")
+        {
+            #$VTYLine= @($line);
+            $VTYFound = $VTYFound + 1;
+            $CONFound = 0; 
+        }
+
+        if ($line -match "access\-class 56 in" -and $VTYFound -gt 0)
+        {
+            $VTYFilter = $VTYFilter + 1
+        }
+
+        if ($line -match "access\-class ACL\-FILTER\-VTY in" -and $VTYFound -gt 0)
+        {
+            $VTYFilter = $VTYFilter + 1
+        }
+
+        if ($line -match "exec\-timeout" -and $VTYFound -gt 0)
+        {
+            $VTYTimeoutFound = $VTYTimeoutFound + 1;
+            $VTYTimeout = $line -match "\d+\s\d+$";
+            $VTYTimeout = $Matches[0];
+            $VTYTimeoutSplit = $VTYTimeout.Split(" ");
+            $VTYTimeoutMin = $VTYTimeoutSplit[0];
+            $VTYTimeoutSec = $VTYTimeoutSplit[1];
+            [int]$VTYTimeoutMin = [convert]::ToInt32($VTYTimeoutMin, 10)
+            [int]$VTYTimeoutSec = [convert]::ToInt32($VTYTimeoutSec, 10)
+
+            if ($VTYTimeoutMin -eq 0 -and $VTYTimeoutSec -eq 0)
+            { $VTYTimeoutCtr = 1}
+
+            if ($VTYTimeoutMin -ge 10 -and $VTYTimeoutSec -gt 0)
+            { $VTYTimeoutExceed = 1}
+        }
+
+        #V-3967: check the timeout of the console interface
+        if ($line -match "^line con 0")
+        {
+            $ConFound = 1;
+        }
+
+        if ($line -match "exec\-timeout" -and $ConFound -eq 1)
+        { 
+            $CONTimeoutFound = $CONTimeoutFound + 1;
+            $CONTimeout = $line -match "\d+\s\d+$";
+            $CONTimeout = $Matches[0];
+            $CONTimeoutSplit = $CONTimeout.Split(" ");
+            $CONTimeoutMin = $CONTimeoutSplit[0];
+            $CONTimeoutSec = $CONTimeoutSplit[1];
+            [int]$CONTimeoutMin = [convert]::ToInt32($CONTimeoutMin, 10)
+            [int]$CONTimeoutSec = [convert]::ToInt32($CONTimeoutSec, 10)
+
+            if ($CONTimeoutMin -eq 0 -and $CONTimeoutSec -eq 0)
+            { $CONTimeoutCtr = 1}
+
+            if ($CONTimeoutMin -ge 10 -and $CONTimeoutSec -gt 0)
+            { $CONTimeoutExceed = 1}
+        }
+
+        #V-3971 Access port in VLAN 1
+        if ($line -match "^ switchport access vlan 1$")
+        { $AccessVlan1 = 1}
+
+        #V-3972 VLAN 1 allowed on Trunk
+        if ($line -match "^ switchport trunk allowed .+ 1[\,|\-]")
+        { $TrunkAllVlan1 = 1}
+
+        
+        #V-3973 Shutdown ports in unused VLAN (999)
+        if ($line -match "^interface (tengiga|vlan|gig|ether|fast)")
+        {
+            $AccessVlan = 0
+            $Shut = 0
+            $IntMatch = 1
+            $ExclamCtr = 0
+        }
+
+        if ($line -match "^ switchport access vlan \d*$")
+        {
+             
+             $sw_ac_vl = $line -match "\d+$"
+             $sw_ac_vl = $Matches[0]
+             [int]$sw_ac_vl = [convert]::ToInt32($sw_ac_vl, 10)
+        }
+
+        if ($line -match "^ switchport mode access")
+        {
+             $AccessVlan = 1
+        }
+        
+        #V-5623 Trunking disabled on all access ports
+        if ($line -match "^ switchport trunk allowed")
+        { $SwPtTrkAll = 1  }  
+
+        if ($line -match "^ shutdown")
+        {
+            $Shut = 1
+        }
+
+        if ($line -match "!" -and $AccessVlan -eq 1 -and $Shut -eq 1 -and $sw_ac_vl -ne 999)
+        {
+            $ShutVL999 = 1
+            #write-host $sw_ac_vl
+            $AccessVlan = 0
+            $Shut = 0
+            $sw_ac_vl = 0
+        }
+
+
+        if ($AccessVlan -eq 1 -and $SwPtTrkAll -eq 1)
+        {
+            $SwPtTrkEn = 1
+        }
+
+        if ($line -match "!" -and $IntMatch -ne 0)
+        { 
+            $IntMatch = 0
+            $ShutVL999 = 0
+            $AccessVlan = 0
+            $SwPtTrkAll = 0
+            $Shut = 0
+            $sw_ac_vl = 0
+        }
+
+        #V-3984 Access port assigned to Native VLAN 55
+        if ($line -match "^ switchport access vlan 55$")
+        { $NativeVlan55 = 1}
+
+        if ($line -match "^ switchport trunk native vlan \d+$")
+        {
+            $NativeChk = $line
+            $NativeChk = $NativeChk -match "\d+$"
+            $NativeChk = $Matches[0]
+
+            if ($NativeChk -eq 1)
+            { $NativeVal = 1}
+        }
+
+        #V-5612: SSH Timeout convert to integer
+        [int]$SSHTimeout = [convert]::ToInt32($SSHTimeout, 10)
+
+        #V-5646: Syn Wait time convert to integer        
+        [int]$SynWaitTime = [convert]::ToInt32($SynWaitTime, 10) 
+
+        #V-7011 Aux Port is disabled
+        if ($line  -match "^line aux")
+        { $AuxFound = 1}
+
+        if ($line -match "^ no exec" -and $AuxFound -eq 1)
+        { $AuxDisabled = 1}    
+
+
+        #V-14667: Rotating keys expire less than 180 days ***2 SPACES***
+            #Find difference in current date and accept key date
+        if ($line -match "^  accept-lifetime .+\d+$")
+        {
+            $KeyFoundA = 1
+            $KeyDate1A = $line.Substring(27, 11)
+            $KeyDate1A = [datetime]$KeyDate1A
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            $KeyDiffA = $KeyDate2.Date - $KeyDate1A.Date
+
+            if ($KeyDiffA -gt 180)
+            { $KeyExceedA = 1}
+            
+            if ($KeyDiffA -lt 0)
+            { $KeyExpiredA = 1}      
+        }
+
+            #Find difference in current date and send key date
+        if ($line -match "^  send-lifetime .+\d+$")
+        {
+            $KeyFoundS = 1
+            $KeyDate1S = $line.Substring(25, 11)
+            $KeyDate1S = [datetime]$KeyDate1S
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            #write-host $KeyDate2
+            $KeyDiffS = $KeyDate2.date - $KeyDate1S.Date
+
+            if ($KeyDiffS -gt 180)
+            { $KeyExceedS = 1}
+            
+            if ($KeyDiffS -lt 0)
+            { $KeyExpiredS = 1}    
+        }
+        
+        #V-14667: Rotating keys expire less than 180 days ***3 SPACES***
+            #Find difference in current date and accept key date
+        if ($line -match "^   accept-lifetime .+\d+$")
+        {
+            $KeyFoundA = 1
+            $KeyDate1A = $line.Substring(28, 11)
+            $KeyDate1A = [datetime]$KeyDate1A
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            $KeyDiffA = $KeyDate2.Date - $KeyDate1A.Date
+
+            if ($KeyDiffA -gt 180)
+            { $KeyExceedA = 1}
+            
+            if ($KeyDiffA -lt 0)
+            { $KeyExpiredA = 1}      
+        }
+
+            #Find difference in current date and send key date
+        if ($line -match "^   send-lifetime .+\d+$")
+        {
+            $KeyFoundS = 1
+            $KeyDate1S = $line.Substring(26, 11)
+            $KeyDate1S = [datetime]$KeyDate1S
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            #write-host $KeyDate2
+            $KeyDiffS = $KeyDate2.date - $KeyDate1S.Date
+
+            if ($KeyDiffS -gt 180)
+            { $KeyExceedS = 1}
+            
+            if ($KeyDiffS -lt 0)
+            { $KeyExpiredS = 1} 
+        }
+
+        #V-14676 Netflow sourced from loopback
+        if ($line -match "^flow exporter")
+        {$FlowFound = 1}
+
+        if ($line -match "^ source Loopback" -and $FlowFound -eq 1)
+        {
+            $LoopFlow = 1;
+            $FlowFound = 0
+        }
+
+        #V-15432 Two separate authentication servers
+        if ($line -match "aaa group server tacacs+")
+        { $AAAServerGroup = 1}
+
+        if ($line -match "^ server \d+\.\d+\.\d+\.\d+" -and $AAAServerGroup -eq 1)
+        { $AAASeverCount = $AAASeverCount + 1}
+
+        if ($line -match "^ server-private \d+\.\d+\.\d+\.\d+" -and $AAAServerGroup -eq 1)
+        { $AAASeverCount = $AAASeverCount + 1}
+
+        #V-17832 management vlan configured with an IP address from  the management network address block
+        if ($line -match "^interface vlan" -or $line -match "^interface vlan888" -or $line -match "^interface Loopback90" -or $line -match "^interface Loopback0" -or $line -match "^interface GigabitEthernet0")
+        { $MgmtIntFound = 1}
+
+        if ($line -match "^ vrf forwarding Mgmt-intf")
+        {$MgmtIntIP = 1}
+
+        if ($line -match "^ ip address \d+\.\d+\.\d+\.\d+" -and $MgmtIntFound -eq 1)
+        { $MgmtIntIP = 1}
+
+        if ($line -match "\!" -and $MgmtIntFound -eq 1)
+        { $MgmtIntFound = 0}
+
+        #V-18566 Port Security Max
+        if ($line -match "switchport port-security maximum")
+        {
+            $PortMax = $line
+            $PortMax = $line -match "\d+$"
+            $PortMax = $Matches[0]
+            #[int]$PortMax = [convert]::ToInt32($PortMax, 10)
+
+            if ($PortMax -gt 1)
+            { $PortMaxSec = 1}
+         } 
+        
+        #V-30578 PIM Neighbor Filter
+        if ($line -match "^ ip pim neighbor-filter")
+        { $MulticastFilter = $MulticastFilter +1}
+
+    }
+
+
+
+
+
+    Write-Host $hostname
+
+    # determines device type router, switch or fw
+    if  ($hostname -match "\-36\d\d")
+    {$DevType = "L2Switch"}
+
+    if  ($hostname -match "\-37\d\d")
+    {$DevType = "L2Switch"}
+
+    if  ($hostname -match "\-44\d\d")
+    {$DevType = "Router"}
+
+    if  ($hostname -match "\-45\d\d")
+    {$DevType = "L2Switch"}
+
+    if  ($hostname -match ".+[R]9\d\d")
+    {$DevType = "Router"}
+
+    if  ($hostname -match "\-29\d\d")
+    {$DevType = "L2Switch"}
+
+    if  ($hostname -match "\-19\d\d")
+    {$DevType = "Router"}
+
+    if  ($hostname -match "VG310")
+    {$DevType = "Router"}
+
+    if  ($hostname -match "\-65\d\d")
+    {$DevType = "L3Switch"}
+
+    if  ($hostname -match "\-35\d\d")
+    {$DevType = "L2Switch"}
+
+    if  ($hostname -match "\-55\d\d")
+    {$DevType = "Firewall"}
+        
+    #v-3000 compares number of times 'deny' was found and 'deny log'
+    if ($ACLCounter -ne $ACLDenyCounter -or $ACLCounter2 -ne $ACLDenyCounter2)
+    {$V3000 = "O"}
+    if ($ACLCounter -eq $ACLDenyCounter -and $ACLCounter2 -eq $ACLDenyCounter2)
+    {$V3000 = "NF"}
+
+    #v-3012, v-3143 validates a unique password has been implemented
+    if ($EnableSecret -eq 0 -or $AAAuthentication -eq 0)
+    { $V3012 = "O"; $V3143 = "O"}
+    if ($EnableSecret -eq 1 -and $AAAuthentication -eq 1)
+    { $V3012 = "NF"; $V3143 = "NF"}
+    
+    #v-3013 results of login banner
+    if ($LOGINBanner -eq 0)
+    { $V3013 = "O"}
+    if ($LOGINBanner -eq 1)
+    { $V3013 = "NF"}
+
+    #v-3014 vty timer set to 0 0 
+    if ($VTYTimeoutCtr -gt 0)
+    {$V3014 = "O"}
+
+    #v-3014 vty timer set to more than 10mins 
+    if ($VTYTimeoutExceed -gt 0)
+    {$V3014 = "O"}
+
+    #v-3014 results of no ip-domain lookup 
+    if ($DomainLookup -ne 0)
+    {$V3020 = "NF"}
+    if ($DomainLookup -eq 0)
+    {$V3020 = "O"}
+
+    #V-3021,3210: checks the SNMP string
+    if ($SNMPString -eq 1 -and $SNMPACL -eq 1)
+    {$V3021 = "NF"; $V3210 = "NF"}
+    if ($SNMPString -eq 0 -or $SNMPACL -eq 0)
+    {$V3021 = "O"; $V3210 = "O"}
+
+    #v-3034: routing protocols use authentication
+    if ($EIGRPFound -eq 1 -and $EIGRPModeCtr -gt 0 -and $EIGRPKeyChnCtr -gt 0)
+    {$V3034 = "NF"}
+    if ($EIGRPFound -eq 0 -and $EIGRPModeCtr -eq 0 -and $EIGRPKeyChnCtr -eq 0)
+    {$V3034 = "NF"}
+    if ($EIGRPFound -eq 1 -and ($EIGRPModeCtr -eq 0 -or $EIGRPKeyChnCtr -eq 0))
+    {$V3034 = "O"}
+
+    #V-3043: checks the SNMP string
+    if ($SNMPString -eq 1)
+    {$V3043 = "NF"}
+    if ($SNMPString -eq 0)
+    {$V3043 = "O"}
+
+    #V-3056, 3966: checks for the number of local accounts
+    if ($UserNameCount -eq 1)
+    {$V3056 = "NF"; $V3966 = "NF"}
+    if ($UserNameCount -eq 0)
+    {$V3056 = "O"; $V3966 = "O"}
+    if ($UserNameCount -ge 2)
+    {$V3056 = "O"; $V3966 = "O"}
+
+    #V-3057: check command authorization configuration
+    $AuthTotal = $Auth0 + $Auth1 + $Auth15
+    if ($AuthTotal -eq 3)
+    {$v3057 = "NF"}
+    if ($Auth0 -eq 0 -or $Auth1 -eq 0 -or $Auth15 -eq 0)
+    {$v3057 = "O"}
+
+    #V-3062: check for encrypted passwords
+    if ($PassEncryptTotal -eq 1 -and $EnableSecret -eq 1 -and $UserNameCount -gt 0)
+    {$V3062 = "NF"}
+
+    #V-3069: FIPS 140-2 compliance
+    $FIPSTotal = $SSHCheck +$NoHTTPCheck + $NoSecHTTPCheck + $SecHttpCheck
+    if ($FIPSTotal -eq 3)
+    {$V3069 = "NF"}
+
+    #V-3070: Access list on all VTY interfaces
+    if ($VTYFound -eq $VTYFilter)
+    {$V3070 = "NF"}
+
+    #V-3078: TCP and UDP small servers
+    if ($SmallServers -ne 0)
+    {$V3078 = "O"}
+             
+    #V-3079: IP Finger command
+    if ($IPFinger -ne 0)
+    {$V3079 = "O"}
+
+    #V-3080: Auto Load configured
+    if ($AutoLoad1 -eq 1)
+    {$V3080 = "O"}
+
+    #V-3081: No IP Source Routing
+    if ($IPSoureRte -eq 1)
+    {$V3081 = "NF"}
+
+    #V-3083: IP Directed Broadcast
+    if ($IPDirected -eq 1)
+    {$V3083 = "O"}
+
+    #V-3085: disable port 80 for admin
+    if ($HTTPCheck -ne 0)
+    {$V3085 = "O"}
+
+    #V-3086: Boot Services disabled
+    if ($IPBoot -eq 1)
+    {$V3086 = "O"}
+
+    #V-3175: authentication for management connections
+    if ($AAAuthentication -eq 1)
+    {$V3175 = "NF"}
+
+    #V-3967: console timeout
+    if ($CONTimeoutCtr -eq 1 -or $CONTimeoutExceed -eq 1)
+    {$V3967 = "O"}
+
+    #V-3969: SNMP String no write access
+    if ($SNMPString -eq 1)
+    { $V3969 = "NF"}
+
+    #V-3971: Access Vlan 1
+    if ($AccessVlan1 -eq 1)
+    {$V3971 = "O"}
+
+    #V-3972: Vlan 1 allowed on trunk
+    if ($TrunkAllVlan1 -eq 1)
+    {$V3972 = "O"}
+
+    #V-3973 Shutdown ports in unused VLAN (999)
+    if ($ShutVL999 -eq 1)
+    {$V3973 = "O"}
+
+    #V-3984 Access switchport not assigned to native vlan
+    if ($NativeVal -eq 1)
+    {$V3984 = "O"}
+
+    #V-4582 Authentication for console access
+    if ($SNMPString -eq 1)
+    {$V4582 = "NF"}
+
+    #V-4584 log all messages except debugging
+    if ($LogTrap -eq 1)
+    {$V4584 = "O"}
+
+    #V-5611 VTY Traffic filtering
+    if ($VTYFound -eq $VTYFilter)
+    {$V5611 = "NF"}
+
+    #V-5612 ssh timeout 60secs or less
+    if ($SSHTimeFound -eq 0)
+    {$V5612 = "O"}
+    if ($SSHTimeFound -eq 1 -and $SSHTimeout -le 60)
+    {$V5612 = "NF"}
+
+    #V-5614 PAD service enabled
+    if ($PadService -eq 1)
+    {$V5614 = "O"}
+
+    #V-5615 TCP Keepalives
+    if ($KeepAlives -eq 1)
+    {$V5615 = "NF"}
+
+    #V-5616 Identification support
+    if ($IPIdentd -eq 1)
+    {$V5616 = "O"}
+
+    #V-5618 Gratuitous ARP disabled
+    if ($GratARPs -eq 1)
+    {$V5618 = "O"}
+
+    #V-5622 Default VLAN not Native VLAN
+    if ($NativeVal -eq 1)
+    {$V5622 = "O"}
+
+    #V-5623 Default VLAN not Native VLAN
+    if ($SwPtTrkEn -eq 1)
+    {$V5623 = "O"}
+
+    #V-5628 dedicated management VLAN
+    if ($NativeVal -eq 1)
+    {$V5628 = "O"}
+
+    #V-5646 must dropped half-open connections
+    if ($SynWaitTime -gt 10 -and $SynWait -eq 1)
+    {$V5646 = "O"}
+    if ($SynWaitTime -le 10 -and $SynWait -eq 1)
+    {$V5646 = "NF"} 
+    
+    #V-7009 infinite lifetime key
+    if ($RtrEigrp -eq 1 -and $LifeTimeKeyA -eq 0)
+    {$V7009 = "O"}
+    #{$V7009 = "O"}       
+    if ($RtrEigrp -eq 1 -and $LifeTimeKeyA -eq 1)
+    {$V7009 = "NF"}
+
+    #V-7011 Aux Port
+    if ($AuxFound -eq 1 -and $AuxDisabled -eq 1)
+    {$v7011 = "NF"}
+    if ($AuxFound -eq 1 -and $AuxDisabled -eq 0)
+    {$V7011 = "O"}
+    
+    #V-14667 rotating keys expire less than 180 days
+    if ($RtrEigrp -eq 1 -and ($KeyExceedA -eq 1 -or $KeyExceedS -eq 1))
+    {$V14667 = "O"}
+    if ($RtrEigrp -eq 1 -and $KeyFoundA -eq 0)
+    {$V14667= "O"}
+    if ($RtrEigrp -eq 1 -and $KeyFoundA -eq 1 -and $KeyExceedA -eq 0 -or $KeyExceedS -eq 0)
+    {$V14667= "NF"}
+
+    #V-14669 bsdr not disabled
+    if ($BSDrEnabled -eq 1)
+    {$V14669 = "O"}
+
+    #V-14672 Loopback for TACACS
+    if ($LoopTacRad -eq 1)
+    {$V14672 = "NF"}
+
+    #V-14673 Loopback for SYSLOG
+    if ($LoopSyslog -eq 1)
+    {$V14673 = "NF"}
+
+    #V-14674 Loopback for NTP
+    if ($LoopNTP -eq 1)
+    {$V14674 = "NF"}
+
+    #V-14675 Loopback for SNMP
+    if ($LoopSNMP -eq 1)
+    {$V14675 = "NF"}
+
+    #V-14676 Loopback for Netflow
+    if ($LoopFlow -eq 1)
+    {$V14676 = "NF"}
+
+    #V-14677 Loopback for FTP/TFTP
+    if ($LoopTFTP -eq 1 -and $LoopFTP -eq 1)
+    {$V14677 = "NF"}
+
+    #V-14717 Use SSH version 2
+    if ($SSHv2 -eq 1)
+    {$V14717 = "NF"}
+
+    #V-15432 Two authentication servers defined
+    if ($AAAServerGroup -eq 1 -and $AAASeverCount -ge 2)
+    {$V15432 = "NF"}
+
+    #V-15434 emergency account authorization level
+    if ($EmergAccount -eq 1)
+    {$V15434 = "NF"}
+
+    #V-17832 Management IP
+    if ($MgmtIntIP -eq 1)
+    {$V17832 = "NF"}
+
+    #V-18566 Port Security Maximum
+    if ($PortMaxSec -eq 1)
+    {$V18566 = "O"}
+
+    #V-19188 Control Plane Protection
+    if ($CPPServPol -eq 1)
+    {$V19188 = "NF"}
+
+    #V-23747 Two NTP servers
+    if ($NTPServCount -ge 2)
+    {$V23747 = "NF"}
+
+    #V-28784 call home service
+    if ($CallHome -eq 1)
+    {$V28784 = "O"}
+
+    #V-30577 PIM enabled
+    if ($MulticastR -eq 1)
+    {$V30577 = "NF"}
+
+    #V-30578 Multicast filter
+    if ($MulticastFilter -ge 1)
+    {$V30578 = "NF"}
+
+    if ($devtype -eq "L3Switch")
+    {
+
+    $o = new-object PSObject
+    $o | Add-Member NoteProperty DeviceName $hostname
+    $o | Add-Member NoteProperty DeviceType $DevType
+    $o | Add-Member NoteProperty Version $version
+    $o | Add-Member NoteProperty V-3000 $V3000
+    $o | Add-Member NoteProperty V-3008 $V3008
+    $o | Add-Member NoteProperty V-3012 $V3012
+    $o | Add-Member NoteProperty V-3013 $V3013
+    $o | Add-Member NoteProperty V-3014 $V3014
+    $o | Add-Member NoteProperty V-3020 $V3020
+    $o | Add-Member NoteProperty V-3021 $V3021
+    $o | Add-Member NoteProperty V-3034 $V3034
+    $o | Add-Member NoteProperty V-3043 $V3043
+    $o | Add-Member NoteProperty V-3056 $V3056
+    $o | Add-Member NoteProperty V-3057 $V3057
+    $o | Add-Member NoteProperty V-3058 $V3058
+    $o | Add-Member NoteProperty V-3062 $V3062
+    $o | Add-Member NoteProperty V-3069 $V3069
+    $o | Add-Member NoteProperty V-3070 $V3070
+    $o | Add-Member NoteProperty V-3072 $V3072
+    $o | Add-Member NoteProperty V-3078 $V3078
+    $o | Add-Member NoteProperty V-3079 $V3079
+    $o | Add-Member NoteProperty V-3080 $V3080
+    $o | Add-Member NoteProperty V-3081 $V3081
+    $o | Add-Member NoteProperty V-3083 $V3083
+    $o | Add-Member NoteProperty V-3085 $V3085
+    $o | Add-Member NoteProperty V-3086 $V3086
+    $o | Add-Member NoteProperty V-3143 $V3143
+    $o | Add-Member NoteProperty V-3160 $V3160
+    $o | Add-Member NoteProperty V-3175 $V3175
+    $o | Add-Member NoteProperty V-3196 $V3196
+    $o | Add-Member NoteProperty V-3210 $V3210
+    $o | Add-Member NoteProperty V-3966 $V3966
+    $o | Add-Member NoteProperty V-3967 $V3967
+    $o | Add-Member NoteProperty V-3969 $V3969
+    $o | Add-Member NoteProperty V-3971 $V3971
+    $o | Add-Member NoteProperty V-3972 $V3972
+    $o | Add-Member NoteProperty V-3973 $V3973
+    $o | Add-Member NoteProperty V-3984 $V3984
+    $o | Add-Member NoteProperty V-4582 $V4582
+    $o | Add-Member NoteProperty V-4584 $V4584
+    $o | Add-Member NoteProperty V-5611 $V5611
+    $o | Add-Member NoteProperty V-5612 $V5612
+    $o | Add-Member NoteProperty V-5613 $V5613
+    $o | Add-Member NoteProperty V-5614 $V5614
+    $o | Add-Member NoteProperty V-5615 $V5615
+    $o | Add-Member NoteProperty V-5616 $V5616
+    $o | Add-Member NoteProperty V-5618 $V5618
+    $o | Add-Member NoteProperty V-5622 $V5622
+    $o | Add-Member NoteProperty V-5623 $V5623
+    $o | Add-Member NoteProperty V-5624 $V5624
+    $o | Add-Member NoteProperty V-5626 $V5626
+    $o | Add-Member NoteProperty V-5628 $V5628
+    $o | Add-Member NoteProperty V-5645 $V5645
+    $o | Add-Member NoteProperty V-5646 $V5646
+    $o | Add-Member NoteProperty V-7009 $V7009
+    $o | Add-Member NoteProperty V-7011 $V7011
+    $o | Add-Member NoteProperty V-14667 $V14667
+    $o | Add-Member NoteProperty V-14669 $V14669
+    $o | Add-Member NoteProperty V-14671 $V14671
+    $o | Add-Member NoteProperty V-14672 $V14672
+    $o | Add-Member NoteProperty V-14673 $V14673
+    $o | Add-Member NoteProperty V-14674 $V14674
+    $o | Add-Member NoteProperty V-14675 $V14675
+    $o | Add-Member NoteProperty V-14676 $V14676
+    $o | Add-Member NoteProperty V-14677 $V14677
+    $o | Add-Member NoteProperty V-14681 $V14681
+    $o | Add-Member NoteProperty V-14693 $V14693
+    $o | Add-Member NoteProperty V-14705 $V14705
+    $o | Add-Member NoteProperty V-14707 $V14707
+    $o | Add-Member NoteProperty V-14717 $V14717
+    $o | Add-Member NoteProperty V-15288 $V15288
+    $o | Add-Member NoteProperty V-15432 $V15432
+    $o | Add-Member NoteProperty V-15434 $V15434
+    $o | Add-Member NoteProperty V-17754 $V17754
+    $o | Add-Member NoteProperty V-17814 $V17814
+    $o | Add-Member NoteProperty V-17815 $V17815
+    $o | Add-Member NoteProperty V-17816 $V17816
+    $o | Add-Member NoteProperty V-17817 $V17817
+    $o | Add-Member NoteProperty V-17818 $V17818
+    $o | Add-Member NoteProperty V-17819 $V17819
+    $o | Add-Member NoteProperty V-17821 $V17821
+    $o | Add-Member NoteProperty V-17822 $V17822
+    $o | Add-Member NoteProperty V-17823 $V17823
+    $o | Add-Member NoteProperty V-17824 $V17824
+    $o | Add-Member NoteProperty V-17825 $V17825
+    $o | Add-Member NoteProperty V-17826 $V17826
+    $o | Add-Member NoteProperty V-17827 $V17827
+    $o | Add-Member NoteProperty V-17832 $V17832
+    $o | Add-Member NoteProperty V-17833 $V17833
+    $o | Add-Member NoteProperty V-17834 $V17834
+    $o | Add-Member NoteProperty V-17835 $V17835
+    $o | Add-Member NoteProperty V-17836 $V17836
+    $o | Add-Member NoteProperty V-17837 $V17837
+    $o | Add-Member NoteProperty V-18522 $V18522
+    $o | Add-Member NoteProperty V-18523 $V18523
+    $o | Add-Member NoteProperty V-18544 $V18544
+    $o | Add-Member NoteProperty V-18545 $V18545
+    $o | Add-Member NoteProperty V-18565 $V18565
+    $o | Add-Member NoteProperty V-18566 $V18566
+    $o | Add-Member NoteProperty V-18790 $V18790
+    $o | Add-Member NoteProperty V-19188 $V19188
+    $o | Add-Member NoteProperty V-19189 $V19189
+    $o | Add-Member NoteProperty V-23747 $V23747
+    $o | Add-Member NoteProperty V-28784 $V28784
+    $o | Add-Member NoteProperty V-30577 $V30577
+    $o | Add-Member NoteProperty V-30578 $V30578
+    $o | Add-Member NoteProperty V-30617 $V30617
+    $o | Add-Member NoteProperty V-30660 $V30660
+    $o | Add-Member NoteProperty V-30736 $V30736
+    $o | Add-Member NoteProperty V-30744 $V30744
+    $o | Add-Member NoteProperty V-31285 $V31285
+
+    $o | export-csv "c:\Users\SamuelH\Desktop\rtsu_audit_L3.csv" -Append -notypeinformation
+    }
+
+    if ($devtype -eq "L2Switch")
+    {
+
+    $o = new-object PSObject
+    $o | Add-Member NoteProperty DeviceName $hostname
+    $o | Add-Member NoteProperty DeviceType $DevType
+    $o | Add-Member NoteProperty Version $version
+    #$o | Add-Member NoteProperty V-3000 $V3000
+    #$o | Add-Member NoteProperty V-3008 $V3008
+    $o | Add-Member NoteProperty V-3012 $V3012
+    $o | Add-Member NoteProperty V-3013 $V3013
+    $o | Add-Member NoteProperty V-3014 $V3014
+    $o | Add-Member NoteProperty V-3020 $V3020
+    $o | Add-Member NoteProperty V-3021 $V3021
+    #$o | Add-Member NoteProperty V-3034 $V3034
+    $o | Add-Member NoteProperty V-3043 $V3043
+    $o | Add-Member NoteProperty V-3056 $V3056
+    $o | Add-Member NoteProperty V-3057 $V3057
+    $o | Add-Member NoteProperty V-3058 $V3058
+    $o | Add-Member NoteProperty V-3062 $V3062
+    $o | Add-Member NoteProperty V-3069 $V3069
+    $o | Add-Member NoteProperty V-3070 $V3070
+    $o | Add-Member NoteProperty V-3072 $V3072
+    $o | Add-Member NoteProperty V-3078 $V3078
+    $o | Add-Member NoteProperty V-3079 $V3079
+    #$o | Add-Member NoteProperty V-3080 $V3080
+    #$o | Add-Member NoteProperty V-3081 $V3081
+    #$o | Add-Member NoteProperty V-3083 $V3083
+    $o | Add-Member NoteProperty V-3085 $V3085
+    #$o | Add-Member NoteProperty V-3086 $V3086
+    $o | Add-Member NoteProperty V-3143 $V3143
+    $o | Add-Member NoteProperty V-3160 $V3160
+    $o | Add-Member NoteProperty V-3175 $V3175
+    $o | Add-Member NoteProperty V-3196 $V3196
+    $o | Add-Member NoteProperty V-3210 $V3210
+    $o | Add-Member NoteProperty V-3966 $V3966
+    $o | Add-Member NoteProperty V-3967 $V3967
+    $o | Add-Member NoteProperty V-3969 $V3969
+    $o | Add-Member NoteProperty V-3971 $V3971
+    $o | Add-Member NoteProperty V-3972 $V3972
+    $o | Add-Member NoteProperty V-3973 $V3973
+    $o | Add-Member NoteProperty V-3984 $V3984
+    $o | Add-Member NoteProperty V-4582 $V4582
+    $o | Add-Member NoteProperty V-4584 $V4584
+    $o | Add-Member NoteProperty V-5611 $V5611
+    $o | Add-Member NoteProperty V-5612 $V5612
+    $o | Add-Member NoteProperty V-5613 $V5613
+    $o | Add-Member NoteProperty V-5614 $V5614
+    $o | Add-Member NoteProperty V-5615 $V5615
+    #$o | Add-Member NoteProperty V-5616 $V5616
+    #$o | Add-Member NoteProperty V-5618 $V5618
+    $o | Add-Member NoteProperty V-5622 $V5622
+    $o | Add-Member NoteProperty V-5623 $V5623
+    $o | Add-Member NoteProperty V-5624 $V5624
+    $o | Add-Member NoteProperty V-5626 $V5626
+    $o | Add-Member NoteProperty V-5628 $V5628
+    #$o | Add-Member NoteProperty V-5645 $V5645
+    #$o | Add-Member NoteProperty V-5646 $V5646
+    #$o | Add-Member NoteProperty V-7009 $V7009
+    $o | Add-Member NoteProperty V-7011 $V7011
+    #$o | Add-Member NoteProperty V-14667 $V14667
+    $o | Add-Member NoteProperty V-14669 $V14669
+    $o | Add-Member NoteProperty V-14671 $V14671
+    #$o | Add-Member NoteProperty V-14672 $V14672
+    #$o | Add-Member NoteProperty V-14673 $V14673
+    #$o | Add-Member NoteProperty V-14674 $V14674
+    #$o | Add-Member NoteProperty V-14675 $V14675
+    #$o | Add-Member NoteProperty V-14676 $V14676
+    #$o | Add-Member NoteProperty V-14677 $V14677
+    #$o | Add-Member NoteProperty V-14681 $V14681
+    #$o | Add-Member NoteProperty V-14693 $V14693
+    #$o | Add-Member NoteProperty V-14705 $V14705
+    #$o | Add-Member NoteProperty V-14707 $V14707
+    #$o | Add-Member NoteProperty V-14717 $V14717
+    #$o | Add-Member NoteProperty V-15288 $V15288
+    $o | Add-Member NoteProperty V-15432 $V15432
+    $o | Add-Member NoteProperty V-15434 $V15434
+    #$o | Add-Member NoteProperty V-17754 $V17754
+    #$o | Add-Member NoteProperty V-17814 $V17814
+    #$o | Add-Member NoteProperty V-17815 $V17815
+    #$o | Add-Member NoteProperty V-17816 $V17816
+    #$o | Add-Member NoteProperty V-17817 $V17817
+    #$o | Add-Member NoteProperty V-17818 $V17818
+    #$o | Add-Member NoteProperty V-17819 $V17819
+    $o | Add-Member NoteProperty V-17820 $V17820
+    $o | Add-Member NoteProperty V-17821 $V17821
+    #$o | Add-Member NoteProperty V-17822 $V17822
+    #$o | Add-Member NoteProperty V-17823 $V17823
+    $o | Add-Member NoteProperty V-17824 $V17824
+    $o | Add-Member NoteProperty V-17825 $V17825
+    $o | Add-Member NoteProperty V-17826 $V17826
+    $o | Add-Member NoteProperty V-17827 $V17827
+    $o | Add-Member NoteProperty V-17832 $V17832
+    #$o | Add-Member NoteProperty V-17833 $V17833
+    #$o | Add-Member NoteProperty V-17834 $V17834
+    #$o | Add-Member NoteProperty V-17835 $V17835
+    #$o | Add-Member NoteProperty V-17836 $V17836
+    #$o | Add-Member NoteProperty V-17837 $V17837
+    #$o | Add-Member NoteProperty V-18522 $V18522
+    #$o | Add-Member NoteProperty V-18523 $V18523
+    $o | Add-Member NoteProperty V-18544 $V18544
+    #$o | Add-Member NoteProperty V-18545 $V18545
+    $o | Add-Member NoteProperty V-18565 $V18565
+    $o | Add-Member NoteProperty V-18566 $V18566
+    #$o | Add-Member NoteProperty V-18790 $V18790
+    #$o | Add-Member NoteProperty V-19188 $V19188
+    #$o | Add-Member NoteProperty V-19189 $V19189
+    $o | Add-Member NoteProperty V-23747 $V23747
+    $o | Add-Member NoteProperty V-28784 $V28784
+    #$o | Add-Member NoteProperty V-30577 $V30577
+    #$o | Add-Member NoteProperty V-30578 $V30578
+    #$o | Add-Member NoteProperty V-30617 $V30617
+    #$o | Add-Member NoteProperty V-30660 $V30660
+    #$o | Add-Member NoteProperty V-30736 $V30736
+    #$o | Add-Member NoteProperty V-30744 $V30744
+    #$o | Add-Member NoteProperty V-31285 $V31285
+
+    $o | export-csv "c:\Users\SamuelH\Desktop\rtsu_audit_L2.csv" -Append -notypeinformation
+    }
+
+    if ($devtype -eq "Router")
+    {
+
+    $o = new-object PSObject
+    $o | Add-Member NoteProperty DeviceName $hostname
+    $o | Add-Member NoteProperty DeviceType $DevType
+    $o | Add-Member NoteProperty Version $version
+    $o | Add-Member NoteProperty V-3000 $V3000
+    $o | Add-Member NoteProperty V-3008 $V3008
+    $o | Add-Member NoteProperty V-3012 $V3012
+    $o | Add-Member NoteProperty V-3013 $V3013
+    $o | Add-Member NoteProperty V-3014 $V3014
+    $o | Add-Member NoteProperty V-3020 $V3020
+    $o | Add-Member NoteProperty V-3021 $V3021
+    $o | Add-Member NoteProperty V-3034 $V3034
+    $o | Add-Member NoteProperty V-3043 $V3043
+    $o | Add-Member NoteProperty V-3056 $V3056
+    $o | Add-Member NoteProperty V-3057 $V3057
+    $o | Add-Member NoteProperty V-3058 $V3058
+    $o | Add-Member NoteProperty V-3062 $V3062
+    $o | Add-Member NoteProperty V-3069 $V3069
+    $o | Add-Member NoteProperty V-3070 $V3070
+    $o | Add-Member NoteProperty V-3072 $V3072
+    $o | Add-Member NoteProperty V-3078 $V3078
+    $o | Add-Member NoteProperty V-3079 $V3079
+    $o | Add-Member NoteProperty V-3080 $V3080
+    $o | Add-Member NoteProperty V-3081 $V3081
+    $o | Add-Member NoteProperty V-3083 $V3083
+    $o | Add-Member NoteProperty V-3085 $V3085
+    $o | Add-Member NoteProperty V-3086 $V3086
+    $o | Add-Member NoteProperty V-3143 $V3143
+    $o | Add-Member NoteProperty V-3160 $V3160
+    $o | Add-Member NoteProperty V-3175 $V3175
+    $o | Add-Member NoteProperty V-3196 $V3196
+    $o | Add-Member NoteProperty V-3210 $V3210
+    $o | Add-Member NoteProperty V-3966 $V3966
+    $o | Add-Member NoteProperty V-3967 $V3967
+    $o | Add-Member NoteProperty V-3969 $V3969
+    $o | Add-Member NoteProperty V-3971 $V3971
+    $o | Add-Member NoteProperty V-3972 $V3972
+    $o | Add-Member NoteProperty V-3973 $V3973
+    $o | Add-Member NoteProperty V-3984 $V3984
+    $o | Add-Member NoteProperty V-4582 $V4582
+    $o | Add-Member NoteProperty V-4584 $V4584
+    $o | Add-Member NoteProperty V-5611 $V5611
+    $o | Add-Member NoteProperty V-5612 $V5612
+    $o | Add-Member NoteProperty V-5613 $V5613
+    $o | Add-Member NoteProperty V-5614 $V5614
+    $o | Add-Member NoteProperty V-5615 $V5615
+    $o | Add-Member NoteProperty V-5616 $V5616
+    $o | Add-Member NoteProperty V-5618 $V5618
+    $o | Add-Member NoteProperty V-5622 $V5622
+    $o | Add-Member NoteProperty V-5623 $V5623
+    $o | Add-Member NoteProperty V-5624 $V5624
+    $o | Add-Member NoteProperty V-5626 $V5626
+    $o | Add-Member NoteProperty V-5628 $V5628
+    $o | Add-Member NoteProperty V-5645 $V5645
+    $o | Add-Member NoteProperty V-5646 $V5646
+    $o | Add-Member NoteProperty V-7009 $V7009
+    $o | Add-Member NoteProperty V-7011 $V7011
+    $o | Add-Member NoteProperty V-14667 $V14667
+    $o | Add-Member NoteProperty V-14669 $V14669
+    $o | Add-Member NoteProperty V-14671 $V14671
+    $o | Add-Member NoteProperty V-14672 $V14672
+    $o | Add-Member NoteProperty V-14673 $V14673
+    $o | Add-Member NoteProperty V-14674 $V14674
+    $o | Add-Member NoteProperty V-14675 $V14675
+    $o | Add-Member NoteProperty V-14676 $V14676
+    $o | Add-Member NoteProperty V-14677 $V14677
+    $o | Add-Member NoteProperty V-14681 $V14681
+    $o | Add-Member NoteProperty V-14693 $V14693
+    $o | Add-Member NoteProperty V-14705 $V14705
+    $o | Add-Member NoteProperty V-14707 $V14707
+    $o | Add-Member NoteProperty V-14717 $V14717
+    $o | Add-Member NoteProperty V-15288 $V15288
+    $o | Add-Member NoteProperty V-15432 $V15432
+    $o | Add-Member NoteProperty V-15434 $V15434
+    $o | Add-Member NoteProperty V-17754 $V17754
+    $o | Add-Member NoteProperty V-17814 $V17814
+    $o | Add-Member NoteProperty V-17815 $V17815
+    $o | Add-Member NoteProperty V-17816 $V17816
+    $o | Add-Member NoteProperty V-17817 $V17817
+    $o | Add-Member NoteProperty V-17818 $V17818
+    $o | Add-Member NoteProperty V-17819 $V17819
+    $o | Add-Member NoteProperty V-17821 $V17821
+    $o | Add-Member NoteProperty V-17822 $V17822
+    $o | Add-Member NoteProperty V-17823 $V17823
+    $o | Add-Member NoteProperty V-17824 $V17824
+    $o | Add-Member NoteProperty V-17825 $V17825
+    $o | Add-Member NoteProperty V-17826 $V17826
+    $o | Add-Member NoteProperty V-17827 $V17827
+    $o | Add-Member NoteProperty V-17832 $V17832
+    $o | Add-Member NoteProperty V-17833 $V17833
+    $o | Add-Member NoteProperty V-17834 $V17834
+    $o | Add-Member NoteProperty V-17835 $V17835
+    $o | Add-Member NoteProperty V-17836 $V17836
+    $o | Add-Member NoteProperty V-17837 $V17837
+    $o | Add-Member NoteProperty V-18522 $V18522
+    $o | Add-Member NoteProperty V-18523 $V18523
+    $o | Add-Member NoteProperty V-18544 $V18544
+    $o | Add-Member NoteProperty V-18545 $V18545
+    $o | Add-Member NoteProperty V-18565 $V18565
+    $o | Add-Member NoteProperty V-18566 $V18566
+    $o | Add-Member NoteProperty V-18790 $V18790
+    $o | Add-Member NoteProperty V-19188 $V19188
+    $o | Add-Member NoteProperty V-19189 $V19189
+    $o | Add-Member NoteProperty V-23747 $V23747
+    $o | Add-Member NoteProperty V-28784 $V28784
+    $o | Add-Member NoteProperty V-30577 $V30577
+    $o | Add-Member NoteProperty V-30578 $V30578
+    $o | Add-Member NoteProperty V-30617 $V30617
+    $o | Add-Member NoteProperty V-30660 $V30660
+    $o | Add-Member NoteProperty V-30736 $V30736
+    $o | Add-Member NoteProperty V-30744 $V30744
+    $o | Add-Member NoteProperty V-31285 $V31285
+
+    $o | export-csv "c:\Users\SamuelH\Desktop\rtsu_audit_Router.csv" -Append -notypeinformation
+    }
+
+
+
+}
