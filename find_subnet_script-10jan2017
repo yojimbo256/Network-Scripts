@@ -1,0 +1,159 @@
+$fileEntries = [IO.Directory]::GetFiles("c:\Users\SamuelH\Desktop\all_dren");
+$numfiles = 0
+ $file_ctr = 0
+ $exclam_ctr = 0
+ $mac_total = 0
+
+foreach ($content in $fileEntries)
+{ $content2 = Get-Content $content
+ #Write-host "*************************"    
+
+#$content = Get-Content("c:\Users\SamuelH\Desktop\L2_devices\K-1100-119-T1-3650-2.kwaj-Running.Config")
+ $int_fnd=0
+ $file_ctr = $file_ctr +1
+ $count_int = 0
+ $sw_ac_vl = " "
+ $mac_stick = " "
+ $stick_int = " "
+ $stick_ctr = 0
+ foreach ($line in $content2)
+    {
+       
+        #switch -regex ($line)
+        #{"^hostname [\w+$]" {$hostname = $line.Substring(9);Write-host $file_ctr; Write-Host $hostname; Write-Host "*************************"} #grabs the hostname
+
+        #}
+        if ($line -match "^interface (giga|vlan|fast|tengig|loop|tunnel)") {
+           $int_fnd = $int_fnd + 1;$exclam_ctr = 0; $stick_ctr = 0
+           $stick_mac_ctr = 0}
+        if ($line -match "^interface (giga|vlan|fast|tengig|loop|tunnel)") {
+           $stick_int = $line}
+        if ($int_fnd -ge 1 -and $exclam_ctr -lt 1) {
+           switch -Regex ($line)
+            { "^ switchport access vlan \d*$" {$sw_ac_vl = $line.substring(23); $sw_ac_vl = $sw_ac_vl.Trim()}
+              "^ ip address " {$mac_stick = $line.substring(11);Write-Host "*************************";$mac_stick = $mac_stick.Trim(); ; write-host $mac_stick;$stick_ctr = $stick_ctr + 1; $mac_total = $mac_total +1}
+              "^\!" {$exclam_ctr = $exclam_ctr +1}
+            }
+        
+        if ($line -match "^ ip address ") {
+        $ippart1 = $mac_stick.Split(" ");
+        $ipportion = $ippart1[0];
+        $subportion = $ippart1[1];
+        $ipportion1 = $ipportion -match "\d+$";
+        $ipportion1 = $matches[0]
+        $ipportion2 = $ipportion -match "^\d+\.\d+\.\d+"
+        $ipportion2 = $matches[0]
+        $subportion1 = $subportion -match "\d+$";
+        $subportion1 = $matches[0]
+        $ipportion3 = $ipportion -match "^\d+\.\d+";
+        $ipportion3 = $matches[0]
+        Write-Host $ipportion1
+        $ip3rdoctet = $ipportion2 -match "\d+$";
+        $ip3rdoctet = $matches[0]
+        write-host $ip3rdoctet
+        $last2 = $ippart1[0] -match "\d+\.\d+$";
+        $last2 = $matches[0]
+        $last2sub = $ippart1[1] -match "\d+\.\d+$";
+        $last2sub = $matches[0]
+        Write-host $last2sub
+        $hostadd = $ippart1[0]
+        #Write-host $subportion1 
+        }
+
+
+
+        if ($last2sub -eq "255.255") {
+            Write-Host "$hostadd/32"
+        }
+
+        if ($last2sub -eq "255.254") {
+            $subincrement = $ipportion1 % 2
+
+            if($subincrement -ne 0) {
+                $sub4thoctet = $ipportion1 -1
+                Write-Host "$ipportion2.$sub4thoctet/31"
+            }
+
+            if($subincrement -eq 0) {
+                Write-Host "$ipportion2.$ipportion1/31"
+            }
+        }
+                
+
+
+
+
+        if ($subportion1 -eq 252) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 4}
+            $subincrement = $subincrement - 4
+            write-host "$ipportion2.$subincrement/30"
+        }
+
+        if ($subportion1 -eq 248) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 8}
+            $subincrement = $subincrement - 8
+            write-host "$ipportion2.$subincrement/29"
+        }
+
+        if ($subportion1 -eq 240) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 16}
+            $subincrement = $subincrement - 16
+            write-host "$ipportion2.$subincrement/28"
+        }
+
+        if ($subportion1 -eq 224) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 32}
+            $subincrement = $subincrement - 32
+            write-host "$ipportion2.$subincrement/27"
+        }
+
+        if ($subportion1 -eq 192) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 64}
+            $subincrement = $subincrement - 64
+            write-host "$ipportion2.$subincrement/26"
+        }
+
+        if ($subportion1 -eq 128) {
+            $subincrement = 0;
+            while($subincrement -lt $ipportion1) {$subincrement = $subincrement + 128}
+            $subincrement = $subincrement - 128
+            write-host "$ipportion2.$subincrement/25"
+        }
+
+        if ($last2sub -eq "255.0") {
+            Write-Host "$ipportion2.0/24"
+        }
+
+        if ($last2sub -eq "254.0") {
+            $subincrement = $ip3rdoctet % 2;
+           
+            if($subincrement -ne 0) {
+                $sub3octet = $ip3rdoctet -1;
+                Write-Host "$ipportion3.$sub3octet.0/23"
+            }   
+            if ($subincrement -eq 0) {
+                write-host "$ipportion3.$sub3octet.0/23"
+            }
+        }
+
+         $ippart1 = " "
+         $ipportion = " "
+         $subportion = " "
+         $subportion1 = " "
+         $last2sub = " "
+
+         if ($line -eq "!" -and $stick_ctr -gt 0 -and $mac_stick.Length -gt 0) {
+            $stick_mac_ctr = $stick_mac_ctr + 1}     
+        }
+     } 
+
+
+}
+             
+Write-Host "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+Write-Host "Total number of ip addresses:" $mac_total
