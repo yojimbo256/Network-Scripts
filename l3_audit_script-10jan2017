@@ -1,0 +1,1599 @@
+#**** STIG Check (re-write) ****
+
+#read each file in the folder
+$ReadFiles = [IO.Directory]::GetFiles("c:\Users\SamuelH\Desktop\nov-l3");
+
+#counter for each file in the folder
+$FileCount = 0
+
+
+#code to run on each file in the folder
+foreach ($Content in $ReadFiles)
+{
+    #opens the file
+    $RawData = get-content $Content
+
+    #start of a new file
+    Write-host "=================================="
+
+    #counters
+    $MOTDBanner = 0
+    $LOGINBanner = 0
+    $EXECBanner = 0
+    $EnableSecret = 0
+    $AAAuthentication = 0
+    $BannerTotal = 0
+    $PasswordTotal = 0
+    $VTYFound = 0
+    $VTYFilter = 0
+    $VTYTimeoutFound = 0
+    $VTYTimeoutCtr = 0
+    $VTYTimeoutExceed = 0
+    $DomainLookup = 0
+    $SNMPString = 0
+    $SNMPACL = 0
+    $UserNameCount = 0
+    $PassEncryptTotal = 0
+    $SSHCheck = 0
+    $SCPCheck = 0
+    $NoHTTPCheck = 0
+    $HTTPCheck = 0
+    $NoSecHTTPCheck = 0
+    $SecHttpCheck = 0
+    $Auth0 = 0
+    $Auth1 = 0
+    $Auth15 = 0
+    $MngConLogPmt = 0
+    $MngConTotalPmt = 0
+    $MngConLogDny = 0
+    $MngConTotalDny = 0
+    $ACLFound = 0
+    $SmallServers = 0
+    $IPFinger = 0
+    $AutoLoad1 = 0
+    $IPSoureRte = 0
+    $IPDirected = 0
+    $IPBoot = 0
+    $SNMPv3Chk = 0
+    $CONFound = 0
+    $CONFilter = 0
+    $CONTimeoutFound = 0
+    $CONTimeoutCtr = 0
+    $CONTimeoutExceed = 0
+    $LogTrap = 0
+    $LogHost = 0
+    $SSHTimeout = 0
+    $SSHTimeFound = 0
+    $SSHRetryFound = 0
+    $PadService = 0
+    $KeepAlives = 0
+    $IPIdentd = 0
+    $GratARPs = 0
+    $CEFFound = 0
+    $SynWait = 0
+    $SynWaitTime = 0
+    $LifeTimeKeyA = 0
+    $LifeTimeKeyS = 0
+    $AuxFound = 0
+    $AuxDisabled = 0
+    $KeyDiffA = 0
+    $KeyFoundA = 0
+    $KeyExceedA = 0
+    $KeyExpiredA = 0
+    $KeyDiffS = 0
+    $KeyFoundS = 0
+    $KeyExceedS = 0
+    $KeyExpiredS = 0
+    $BSDrEnabled = 0
+    $NTPAuthenKey = 0
+    $NTPAuthen = 0
+    $NTPTrustKey = 0
+    $LoopTacRad = 0
+    $LoopSyslog = 0
+    $LoopNTP= 0
+    $LoopSNMP = 0
+    $FlowFound = 0
+    $LoopFlow = 0
+    $LoopTFTP = 0
+    $LoopFTP = 0
+    $RouterBGP = 0
+    $LoopRouterBGP = 0
+    $AAAServerGroup = 0
+    $AAASeverCount = 0
+    $SSHv2 = 0
+    $EmergAccount = 0
+    $MgmtIntFound = 0
+    $MulticastR = 0
+    $MulticastInt = 0
+    $multicastfilter = 0
+    $IGMPv3 = 0
+    $CallHome = 0
+    $NTPServCount = 0
+    $MCastBound = 0
+    $CPPFound = 0
+    $CPPServPol = 0
+    $CPPACL = 0
+    $CPPPolMap = 0
+    $RtrEigrp = 0
+    $TunlFound = 0
+    $DefltRoute = 0
+    $AccessVlan1 = 0
+    $IntMatch = 0
+    $TrunkAllVlan1 = 0
+    $ShutVL999 = 0
+    $NativeVlan55 = 0
+    $NativeChk = 0
+    $NativeVal = 0
+    $SwPtTrkEn = 0
+    $Dot1xTO = 0
+    $Dot1xAuth = 0
+    $VlanFound = 0
+    $PrintVlan = 0
+    $PrintFound = 0
+    $PrinterCheck = 0
+    $PortSec = 0
+    $PortMax = 0
+    $PortMaxSec = 0
+    $ACLDenyAll = 0
+    $ACLCounter = 0
+    $ACLDenyCounter = 0
+    $ACLCounter2 = 0
+    $ACLDenyCounter2 = 0
+    $EIGRPModeCtr = 0
+    $EIGRPKeyChnCtr = 0
+    $VTYLine = " "
+    $KeyDate2 = " "
+    $TimeNow = " "
+    $MNGACLOUT = 0
+    $MNGACLIN = 0
+    $ClassMarkTraffic = 0
+    $IntVLANMatch = 0
+    $IntServerMatch = 0
+    $IntPrintMatch = 0
+    $ServerACL = 0
+    $PrintACL = 0
+
+    #message variables for Open findings
+    $MOTDMessage = "V-3013 = O -banner MOTD is missing"
+    $LOGINMessage = "V-3013 = O -banner LOGIN is missing"
+    $EXECMessage = "V-3013 = O -banner EXEC is missing"
+    $EnableSecretMessage = "V-3012 = O -enable secret password missing"
+    $AAAuthenticationMessage = "V-3012 = O -authentication missing"
+    $VTYTimeoutMissingMessage = "V-3014 = O -vty timeout not found"
+    $VTYTimeoutNotSetMessage = "V-3014 = O -vty timeout not set"
+    $VTYTimeoutExceedMessage = "V-3014 = O -vty timeout exceeds 10 minutes"
+    $DomainLookupNotDisabledMessage = "V-3020 = O -domain lookup is not disabled"
+    $VTYACLMissingMessage = "V-5611 = O -ACL not implemented on management interface"
+    $SNMPNotV3Message = "V-3021 = O -SNMP string is not v3 complaint with STIG"
+    $SNMPACLMessage = "V-3021 = O -SNMP ACL is not complaint"
+    $GroupAccountTooManyMessage = "V-3056 = O -Too many local accounts"
+    $NoLocalAccounts = "V-3056 = O -local account isn't present"
+    $PassNoEncryptMessage = "V-3062 = O -local passwords are not encrypted"
+    $SSHMissingMessage = "V-3069 = O -missing SSH version 2"
+    $SCPMissingMessage = "V-3069 = O -missing SCP"
+    $HTTPPresMessage = "V-3069 = O -non-secure http configured"
+    $SNMPAccessNotMessage = "V-3043 = O -SNMP string is not complaint"
+    $Auth0Message = "V-3057 = O -missing authorization for level 0 cmds"
+    $Auth1Message = "V-3057 = O -missing authorization for level 1 cmds"
+    $Auth15Message = "V-3057 = O -missing authorization for level 15 cmds"
+    $MngConDenyMessage = "V-3070 = O -one or more deny statements missing log option"
+    $MngConPmtMessage = "V-3070 = O -one or more permit statements missing log option"
+    $SmallServerNotMessage = "V-3078 = O -small servers configured"
+    $IPFingerOpen = "V-3079 = O -ip finger configured"
+    $AutoLoadOpenMessage = "V-3080 = O -auto-loading found"
+    $IPSourceOpenMessage = "V-3081 = O -no ip source routing not implemented"
+    $IPDirectedOpenMessage = "V-3083 = O -ip directed broadcast implemented"
+    $HTTPOpenMessage = "V-3085 = O -HTTP server not disabled"
+    $IPBootOpenMessage = "V-3086 = O -BOOTP service not disabled"
+    $DefaultPassOpenMessage = "V-3143 = O -Default password configured"
+    $VersionOpenMessage = "V-3160 = O -Software version out of date"
+    $AuthenMngmtOpenMessage = "V-3175 = O -management connections are not authenticated"
+    $SNMPSecureOpenMessage = "V-3196 = O -insecure SNMP version used"
+    $SNMPDefaultOpenMessage = "V-3210 = O -default SNMP string used or non-standard string"
+    $LocalAcctOpenMessage = "V-3966 = O -too many local accounts"
+    $LocalAcctOpenMessage2 = "V-3966 = O -no local account defined"
+    $CONTimeoutNotSetMessage = "V-3967 = O -console timeout not set"
+    $CONTimeoutMissingMessage = "V-3967 = O -console timeout not found"
+    $CONTimeoutExceedMessage = "V-3967 = O -console timeout exceeds 10 minutes"
+    $SNMPReadOpenMessage = "V-3969 = O -SNMP string is not read only or doesn't comply with local standard"
+    $CONAuthOpenMessage = "V-4582 = O -no authentication on console port"
+    $LogTrapOpenMessage = "V-4584 = O -logging messages not configured for informational"
+    $LogHostOpenMessage = "V-4584 = O -less than 2 logging host configured"
+    $SSHTimeoutOpenMessage1 = "V-5612 = O -ssh timeout more than 60 seconds"
+    $SSHTimeoutOpenMessage2 = "V-5612 = O -ssh timeout not configured"
+    $SSHRetriesOpenMessage = "V-5613 = O -ssh retries exceed 3"
+    $PadServiceOpenMessage = "V-5614 = O -pad service implmented"
+    $KeepAliveOpenMessage = "V-5615 = O -keep-alives not enabled"
+    $IPIdentdOpenMessage = "V-5616 = O -identification support enabled"
+    $GratARPSOpenMessage = "V-5618 = O -gratuitous arps are not disabled"
+    $CEFOpenMessage = "V-5645 = NF *need to verify by using 'show ip cef'"
+    $SynWaitOpenMessage1 = "V-5646 = O -device does not drop half open connections"
+    $SynWaitOpenMessage2 = "V-5646 = O -time exceeds 10 seconds"
+    $LifeTimeKeyOpenMessageS = "V-7009 = O -send lifetime key not implemented"
+    $LifeTimeKeyOpenMessageA = "V-7009 = O -accept lifetime key not implemented"
+    $AuxDiabledOpenMessage = "V-7011 = O -aux port is not disabled"
+    $KeyRotateOpenMessageA1 = "V-14667 = O -accept key exceeds 180 days"
+    $KeyRotateOpenMessageA2 = "V-14667 = O -accept key is expired"
+    $KeyRotateOpenMessageS1 = "V-14667 = O -send key exceeds 180 days"
+    $KeyRotateOpenMessageS2 = "V-14667 = O -send key is expired"
+    $BSDrOpenMessage = "V-14669 = O -BSDr is not disabled"
+    $NTPAuthenOpenMessage1 = "V-14671 = O -ntp authentication key missing"
+    $NTPAuthenOpenMessage2 = "V-14671 = O -ntp authentication command missing"        
+    $NTPAuthenOpenMessage3 = "V-14671 = O -ntp trusted key missing"
+    $LoopTacRadOpenMessage = "V-14672 = O -loopback interface is not the source for TACACS/RADIUS" 
+    $LoopSyslogOpenMessage = "V-14673 = O -loopback interface is not the source for SYSLOG"
+    $LoopNTPOpenMessage = "V-14674 = O -loopback interface is not the source for NTP" 
+    $LoopSNMPOpenMessage = "V-14675 = O -loopback interface is not the source for SNMP"
+    $LoopFlowOpenMessage = "V-14676 = O -loopback interface is not the source for NetFlow"
+    $LoopTFTPOpenMessage = "V-14677 = O -loopback interface is not the source for TFTP"
+    $LoopFTPOpenMessage = "V-14677 = O -loopback interface is not the source for FTP"
+    $LoopBGPOpenMessage = "V-14681 = O -loopback interface is not the source for BGP Peers"
+    $AAAServerOpenMessage1 = "V-15432 = O -two separate authentication servers not present"
+    $AAAServerOpenMessage2 = "V-15432 = O -AAA TACACS+ servers not defined"
+    $SSHv2OpenMessage = "V-14717 = O -ssh version 2 is not implemented"
+    $EmergAccountOpenMessage = "V-15434 = O -emergency account does not have appropriate authorization"
+    $MgmtIntOpenMessage = "V-17832 = O -the management VLAN is not configured with an IP Address or not defined" 
+    $MulticastFilterOpenMessage = "V-30578 = O -multicast filter not implemented on an interface"
+    $IGMPv3OpenMessage = "V-30585 = O -IGMPv3 is implemented but PIM-SSM is not enabled"
+    $CallHomeOpenMessage = "V-28784 = O -Call home service is enabled."
+    $NTPServerOpenMessage = "V-23747 = O -Less than 2 NTP servers are defined"
+    $McastBoundOpenMessage = "V-19189 = O -Multicast implemented but multicast boundary not defined"
+    $CPPOpenMessage1 = "V-19188 = O -missing CPP ACL"
+    $CPPOpenMessage2 = "V-19188 = O -missing CPP Service Policy"
+    $CPPOpenMessage3 = "V-19188 = O -missing CPP Policy Map"
+    $CPPOpenMessage4 = "V-19188 = O -missing CPP statement"
+    $TunDfltOpenMessage = "V-18790 = O - manual verification to ensure tunnel is not default route"
+    $AccessVlan1OpenMessage = "V-3971 = O -one or more access port is assigned to VLAN 1"
+    $TrunkAllVlanOpenMessage = "V-3972 = O -VLAN 1 is allowed on a trunk port"
+    $ShutVL999OpenMessage = "V-3973 = O -one or more disabled ports are not assigned to VLAN 999"
+    $NativeVLAN55OpenMessage = "V-3984 = O - one or more VLANs are assigned to the Native VLAN 55"
+    $NativeChkOpenMessage = "V-5622 = O -native VLAN configured to VLAN 1"
+    $SwPtTrkEnOpenMessage = "V-5623 = O -trunking is enabled on an access port"
+    $Dot1xTOpenMessage = "V-5624 = O -dot1x authentication timer is not set or more than 60 minutes"
+    $Dot1xAuthOpenMessage = "V-5626 = O -dot1x authentication not implemented"
+    $ManVlanOpenMessage = "V-5628 = O -VLAN 1 is not pruned from the trunk"
+    $PrintOpenMessage = "V-18544 = O -Printer VLAN is not assigned"
+    $PortSecOpenMessage = "V-18565 = O -one or more ports will not shutdown if an insecure host is connected"
+    $PortMaxSecOpenMessage = "V-18566 = O -one or more ports are configured with more than one registered MAC Address"
+    $ACLDenyOpenMessage = "V-3000 = O -an ACL deny statement is missing the log statement" 
+    $EIGRPAuthenOpenMessage = "V-3034 = O -routing interfaces do not have authentication"
+    $MgmtVlanOutOpenMessage = "V-17833 = O -missing ACL on the out going management vlan"
+    $MgmtVlanInOpenMessage = "V-17834 = O -missing ACL on the in coming management vlan"
+    $ClassMarkOpenMessage = "V-17836 = O -management traffic is not classmarked"
+    $ClassMarkOpenMessage2 = "V-17837 = O -management traffic is not classmarked"
+    $ServerACLOpenMessage1 = "V-18522 = O -missing ACL to restrict access server VLAN" 
+    $ServerACLOpenMessage2 = "V-18523 = O -missing ACL to restrict access server VLAN" 
+    $PrintACLOpenMessage = "V-18545 = O -missing ACL to restrict access print VLAN"
+
+    #message variables for No Findings
+    $IPSECOOBMessage = "V-3008 = NF"
+    $PasswordProtectMessage = "V-3012 = NF"
+    $BannerTotalMessage = "V-3013 = NF"
+    $VTYTimeoutMessage = "V-3014 = NF"
+    $VTYACLMessage = "V-5611 = NF"
+    $DomainLookupMessage = "V-3020 = NF"
+    $SNMPV3Message = "V-3021 = NF"
+    $SNMPAccessMessage = "V-3043 = NF"
+    $GroupAccountMessage = "V-3056 = NF"
+    $PassEncryptMessage = "V-3062 = NF"
+    $FIPSMessage = "V-3069 = NF"
+    $LeastPriv = "V-3057 = NF"
+    $MngConMessage = "V-3070 = NF"
+    $ConfigSyncMessage = "V-3072 = NF"
+    $SmallServerMessage = "V-3078 = NF"
+    $IPFingerMessage = "V-3079 = NF"
+    $AutoLoadMessage = "V-3080 = NF"
+    $IPSourceMessage = "V-3081 = NF"
+    $IPDirectedMessage = "V-3083 = NF"
+    $HTTPMessage = "V-3085 = NF"
+    $IPBootMessage = "V-3086 = NF"
+    $DefaultPassMessage = "V-3143 = NF"
+    $VersionMessage = "V-3160 = NF"
+    $AuthenMngmtMessage = "V-3175 = NF"
+    $SNMPSecureMessage = "V-3196 = NF *need to verify by using 'show snmp user'"
+    $SNMPDefaultMessage = "V-3210 = NF"
+    $LocalAcctMessage = "V-3966 = NF"
+    $CONTimeoutMessage = "V-3967 = NF"
+    $SNMPReadMessage = "V-3969 = NF"
+    $CONAuthMessage = "V-4582 = NF"
+    $LogTrapMessage = "V-4584 = NF"
+    $SSHTimeoutMessage = "V-5612 = NF"
+    $SSHRetriesMessage = "V-5613 = NF"
+    $PadServiceMessage = "V-5614 = NF"
+    $KeepAliveMessage = "V-5615 = NF"
+    $IPIdentdMessage = "V-5616 = NF"
+    $GratARPSMessage = "V-5618 = NF"
+    $CEFMessage = "V-5645 = NF"
+    $SynWaitMessage = "V-5646 = NF"
+    $LifeTimeKeyMessage = "V-7009 = NF"
+    $AuxDiabledMessage = "V-7011 = NF"
+    $KeyRotateMessage = "V-14667 = NF"
+    $BSDrMessage = "V-14669 = NF"
+    $NTPAuthenMessage = "V-14671 = NF"
+    $LoopTacMessage = "V-14672 = NF"
+    $LoopSysMessage = "V-14673 = NF" 
+    $LoopNTPMessage = "V-14674 = NF"
+    $LoopSNMPMessage = "V-14675 = NF" 
+    $LoopFlowMessage = "V-14676 = NF"
+    $LoopFTPMessage = "V-14677 = NF"
+    $LoopBGPMessage = "V-14681 = NA - BGP not implemented" 
+    $IPv6Message1 = "V-14693 = NA - IPv6 not implemented"
+    $IPv6Message2 = "V-14705 = NA - IPv6 not implemented"
+    $IPv6Message3 = "V-14707 = NA - IPv6 not implemented"
+    $SSHv2Message = "V-14717 = NF"
+    $IPv6Message5 = "V-15288 = NA - IPv6 not implemented"
+    $AAAServerMessage = "V-15432 = NF"
+    $EmergAccountMessage = "V-15434 = NF"
+    $OOBIpsecMessage1 = "V-17754 = NA - OOBM network not implemented"
+    $OOBIpsecMessage2 = "V-17814 = NA - OOBM network not implemented"
+    $OOBIpsecMessage3 = "V-17815 = NA - OOBM network not implemented"
+    $OOBIpsecMessage4 = "V-17816 = NA - OOBM network not implemented"
+    $OOBIpsecMessage5 = "V-17817 = NA - OOBM network not implemented"      
+    $OOBIpsecMessage6 = "V-17818 = NA - OOBM network not implemented"
+    $OOBIpsecMessage7 = "V-17819 = NA - OOBM network not implemented"
+    $OOBIpsecMessage7a = "V-17820 = NA - OOBM network not implemented"
+    $OOBIpsecMessage8 = "V-17821 = NA - OOBM network not implemented"
+    $OOBIpsecMessage9 = "V-17822 = NA - OOBM network not implemented"
+    $OOBIpsecMessage10 = "V-17823 = NA - OOBM network not implemented"
+    $OOBIpsecMessage11 = "V-17824 = NA - OOBM network not implemented"
+    $OOBIpsecMessage12 = "V-17825 = NA - OOBM network not implemented"
+    $OOBIpsecMessage13 = "V-17826 = NA - OOBM network not implemented"
+    $OOBIpsecMessage14 = "V-17827 = NA - OOBM network not implemented"
+    $MgmtIntMessage = "V-17832 = NF"
+    $CallHomeMessage = "V-28784 = NF"
+    $MulticastRteMessage1 = "V-30577 = NA - multicast routing not implemented on this device"
+    $MulticastRteMessage2 = "V-30577 = NF *requires documenting in a multicast topology diagram"
+    $MulticastRteMessage3 = "V-30577 = NA - multicast routing is not enabled but interface has multicast config"
+    $MulticastFilterMessage1 = "V-30578 = NA - multicast routing not implemented on this device"
+    $MulticastFilterMessage2 = "V-30578 = NF"
+    $IGMPv3Message = "V-30585 = NA - IGMPv3 is not implemented"
+    $IGMPv3Message2 = "V-30585 = NF"
+    $IPv6MaxHopMessage = "V-30617 = NA - IPv6 not implemented"
+    $IPv6to4Message1 = "V-30660 = NA - IPv6 not implemented"
+    $IPv6to4Message2 = "V-30736 = NA - IPv6 not implemented"
+    $L2TPAuthenMessage = "V-30744 = NA - L2TP not implemented"
+    $BGPAuthenMessage = "V-31285 = NA - BGP not implemented"
+    $NTPServerMessage = "V-23747 = NF"
+    $McastBoundMessage1 = "V-19189 = NF"
+    $McastBoundMessage2 = "V-19189 = NA - multicast not implemented"
+    $CPPMessage = "V-19188 = NF"
+    $TunDfltMessage = "V-18790 = NF"
+    $UnauthAcctsMessage = "V-3058 = NF *local SOP needs to have procedure to review active accounts"
+    $AccessVlan1Message = "V-3971 = NF"
+    $TrunkAllVlanMessage = "V-3972 = NF"
+    $ShutVL999Message = "V-3973 = NF"
+    $NativeVLAN55Message = "V-3984 = NF"
+    $NativeChkMessage = "V-5622 = NF"
+    $SwPtTrkEnMessage = "V-5623 = NF"
+    $Dot1xMessage = "V-5624 = NF"
+    $Dot1xAuthMessage = "V-5626 = NF"
+    $ManVlanMessage = "V-5628 = NF"
+    $PrintMessage = "V-18544 = NF"
+    $PortSecMessage = "V-18565 = NF"
+    $PortMaxSecMessage = "V-18566 = NF"
+    $ACLDenyMessage = "V-3000 = NF"
+    $EIGRPAuthenMessage = "V-3034 = NF"
+    $MgmtVlanOutMessage = "V-17833 = NF"
+    $MgmtVlanINMessage = "V-17834 = NF"
+    $TunnelNOCMessage = "V-17835 = NA- management traffic is not transmitted to a NOC"
+    $ClassMarkMessage = "V-17836 = NF"
+    $ClassMarkMessage2 = "V-17837 = NF"
+    $ServerACLMessage1 = "V-18522 = NF *verify ACL statements" 
+    $ServerACLMessage2 = "V-18523 = NF *verify ACL statements"
+    $PrintACLMessage = "V-18545 = NF *verify ACL statements"
+
+   #variables for STIG findings. "O" = Open, "NF" = No Finding, "NA" = Not Applicable
+
+    foreach ($line in $RawData)
+    {
+        switch -Regex($line)
+        {
+            #checks for hostname
+            "^hostname [\w+$]" {$hostname = $line.Substring(9); Write-Host $hostname}
+            "^version" {$version = $line.Substring(8)} #grabs the version
+
+            #v-3013: checks for banners, then increments each counter
+            "^banner exec" {$EXECBanner = 1} 
+            "^banner motd" {$MOTDBanner = 1}
+            "^banner login" {$LOGINBanner = 1}
+
+            #V-3012,3143,4582: checks for password protection
+            "enable secret 5" {$EnableSecret = 1}
+            "aaa authentication login default group"{$AAAuthentication = 1}
+
+            #V-3020: checks for DNS servers
+            "^no ip domain-lookup"{$DomainLookup = 1}
+            "^no ip domain lookup"{$DomainLookup = 1}
+            "^ip name-server" {$DomainLookup = 1}
+
+            #V-3021,3210: checks the SNMP string
+            "^snmp-server group .+ v3 priv access 58" {$SNMPString = 1}
+            "^snmp-server group .+ v3 priv access ACL-FILTER-SNMP$" {$SNMPString = 1}
+            "^access-list 58" {$SNMPACL = 1}
+            "^ip access-list standard ACL-FILTER-SNMP$" {$SNMPACL = 1}
+
+            #V-3034: routing protocols use authentication
+            "^ ip authentication mode eigrp" {$EIGRPModeCtr = $EIGRPModeCtr + 1}
+            "^ ip authentication key-chain eigrp" {$EIGRPKeyChnCtr = $EIGRPKeyChnCtr + 1}
+
+            #V-3056,3966: check for group accounts
+            "^username" {$UserNameCount = $UserNameCount + 1}
+
+            #V-3057: check priv level
+            "^aaa authorization commands 0" {$Auth0 = 1}
+            "^aaa authorization commands 1 " {$Auth1 = 1}
+            "^aaa authorization commands 15" {$Auth15 = 1}
+
+            #V3062: check for password encryption
+            "^service password-encryption" {$PassEncryptTotal = 1}
+
+            #V-3069: FIPS 140-2 compliance
+            "^ip ssh version 2" {$SSHCheck = 1}
+            "^ip scp server enable" {$SCPCheck = 1}
+            "^no ip http server" {$NoHTTPCheck = 1}
+            "^ip http server" {$HTTPCheck = 1}
+            "^no ip http secure-server" {$NoSecHTTPCheck = 1}
+            "^ip http secure-server" {$SecHttpCheck = 1}
+
+            #V-3070: Log management connections
+            "^access-list 56 permit .+ log$" {$MngConLogPmt = $MngConLogPmt + 1}
+            "^access-list 56 permit .+$" {$MngConTotalPmt = $MngConTotalPmt +1}
+            "^access-list 56 deny .+ log$" {$MngConLogDny = $MngConLogDny + 1}
+            "^access-list 56 deny .+$" {$MngConTotalDny = $MngConTotalDny +1}
+
+            #V-3078: TCP and UDP small servers
+            "^service tcp-small-servers" {$SmallServers = 1}
+            "^service udp-small-servers" {$SmallServers = 1}
+
+            #V-3079: IP finger
+            "^ip finger" {$IPFinger = 1}
+
+            #V-3080: Auto-loading
+            "^service config" {$AutoLoad1 = 1}
+            "^boot network" {$AutoLoad1 = 1}
+
+            #V-3081: No IP Source Routing
+            "^no ip source-route" {$IPSoureRte = 1}
+
+            #V-3083: IP Directed Broadcast
+            "^ip directed-broadcast" {$IPDirected = 1}
+
+            #V-3085: HTTP Disabled
+            "^ip http-server" {$HTTPCheck = 1}
+
+            #V-3086: Boot service disabled
+            "^ip bootp server" {$IPBoot = 1}
+
+            #V-3196: Insecure SNMP
+            "snmp-server group .+ v3 .+$" {$SNMPv3Chk = 1}
+
+            #V-4584: log all messages except debugging
+            "^logging trap debugging" {$LogTrap = 1}
+            "^logging trap notifications" {$LogTrap =1}
+            "^logging trap warnings" {$LogTrap = 1}
+            "^logging trap errors" {$LogTrap = 1}
+            "^logging trap critical" {$LogTrap = 1}
+            "^logging trap alerts" {$LogTrap = 1}
+            "^logging trap emergencies" {$LogTrap = 1}
+
+            "^logging host" {$LogHost = $LogHost + 1}
+
+            #V-5612: ssh timeout 60secs or less
+            "^ip ssh time-out" {$SSHTimeFound = 1;$SSHTimeout = $line.Substring(16)}
+
+            #V-5613: ssh retry atempts 3 or less
+            "^ip ssh authentication-retries" {$SSHRetryFound = 1;$SSHRetries = $line.Substring(30)}
+
+            #V-5614: pad service is disabled
+            "^service pad" {$PadService = 1}
+
+            #V-5615: tcp keep-a-lives
+             "^service tcp-keepalives-in" {$KeepAlives = 1}
+
+            #V-5616: identification support
+            "^ip identd"{$IPIdentd = 1}
+
+            #V-5618: gratuitous ARP disabled
+            "^ip gratuitous-arps" {$GratARPs = 1} 
+
+            #V-5624: dot1x reauthentication
+            "dot1x timeout reauth-period 3600" {$Dot1xTO = 1}
+
+            #V-5626: dot1x authentication on switchports
+            "dot1x system-auth-control" {$Dot1xAuth = 1}
+
+            #V-5645: CEF not enabled
+            "^ip cef" {$CEFFound = 1}
+
+            #V-5646: drop half opened connections
+            "^ip tcp synwait-time" {$SynWait = 1;$SynWaitTime = $line.Substring(20)}
+
+            #V-7009: infinite lifetime key
+            "accept-lifetime .+ infinite" {$LifeTimeKeyA = 1 }
+            "send-lifetime .+ infinite" {$LifeTimeKeyS = 1}
+
+            #V-14669: bsdr not disabled
+            "^ip rcmd rcp-enable" {$BSDrEnabled = 1}
+            "^ip rcmd rsh-enable" {$BSDrEnabled =1}
+
+            #V-14671: ntp authentication implemented
+            "ntp authentication-key" {$NTPAuthenKey = 1}
+            "ntp authenticate" {$NTPAuthen = 1}
+            "ntp trusted-key" {$NTPTrustKey = 1}
+
+            #V-14672: must use loopback as source address for TACACS and RADIUS traffic
+            "^ip tacacs source-interface Loopback" {$LoopTacRad = 1}
+            "^ ip tacacs source-interface Loopback" {$LoopTacRad = 1}
+            "^ip radius source-interface Loopback" {$LoopTacRad = 1}
+            
+            #V-14673: must use loopback as source address for SYSLOG traffic
+            "^logging source-interface Loopback" {$LoopSyslog = 1}
+
+            #V-14674: must use loopback as source address for NTP traffic
+            "^ntp source Loop" {$LoopNTP = 1}
+
+            #V-14675: must use loopback as source address for SNMP traffic
+            "^snmp-server trap-source Loopback" {$LoopSNMP = 1}
+
+            #V-14676 Netflow sourced from loopback
+            "^ip flow-export source Loopback" {$LoopFlow = 1}
+
+            #V-14677 must use loopback as source address for FTP/TFTP
+            "ip tftp source-interface Loopback" {$LoopTFTP = 1}
+            "ip ftp source-interface Loopback" {$LoopFTP = 1}
+
+            #V-14717 SSH version 2
+            "^ip ssh version 2" {$SSHv2 = 1}
+
+            #V-15434 emergency account authorization level
+            "^username .+ privilege 0 secret 5 .+" {$EmergAccount = 1}
+
+            #V-28784 call home service
+            "^ service call-home" {$CallHome = 1}
+
+            #V-30577 PIM enabled on wrong interfaces
+            "^ip multicast-routing" {$MulticastR = 1}
+            "^ip multicast routing" {$MulticastR = 1}
+            "^ip multicast-routing distributed" {$MulticastR = 1}
+            
+            #V-30585 IGMP version 3
+            "ip igmp version 3" {$IGMPv3 = 1}
+            "ip igmp v3lite" {$IGMPv3 = 1}
+            "ip pim ssm default" {$SSM = 1}
+            "ip pim ssm range" {$SSM = 1}
+
+            #V-23747 Two NTP servers
+            "^ntp server \d+\.\d+\.\d+\.\d+" {$NTPServCount = $NTPServCount + 1}
+
+            #V-19189 Multicast Boundary
+            "^ip multicast boundary" {$MCastBound = 1}
+
+            #V-19188 Control Plane Protection
+            "^control-plane" {$CPPFound = 1}
+            "^ service-policy input CONTROL_PLANE_POLICY" {$CPPServPol = 1}
+            "^ip access-list extended COPP" {$CPPACL = 1}
+            "^policy-map CONTROL_PLANE_POLICY" {$CPPPolMap = 1}
+
+            #V-18790 Default Routes for tunnels
+            "^router eigrp" {$RtrEigrp = 1}
+            "^interface Tunnel" {$TunlFound = 1}
+            "^ip route 0.0.0.0" {$DefltRoute = 1}
+
+            #V-18565 Port Security
+            " switchport port-security violation restrict" {$PortSec = 1}
+            " switchport port-security violation protect" {$PortSec = 1}
+
+
+        }
+
+        #V-3014, V-5611: checks the management connections for timeout and acl filter
+        if ($line -match "^line vty")
+        {
+            #$VTYLine= @($line);
+            $VTYFound = $VTYFound + 1;
+            $CONFound = 0; 
+        }
+
+        if ($line -match "access\-class 56 in" -and $VTYFound -gt 0)
+        {
+            $VTYFilter = $VTYFilter + 1
+        }
+
+        if ($line -match "access\-class ACL\-FILTER\-VTY in" -and $VTYFound -gt 0)
+        {
+            $VTYFilter = $VTYFilter + 1
+        }
+
+        if ($line -match "exec\-timeout" -and $VTYFound -gt 0)
+        {
+            $VTYTimeoutFound = $VTYTimeoutFound + 1;
+            $VTYTimeout = $line -match "\d+\s\d+$";
+            $VTYTimeout = $Matches[0];
+            $VTYTimeoutSplit = $VTYTimeout.Split(" ");
+            $VTYTimeoutMin = $VTYTimeoutSplit[0];
+            $VTYTimeoutSec = $VTYTimeoutSplit[1];
+            [int]$VTYTimeoutMin = [convert]::ToInt32($VTYTimeoutMin, 10)
+            [int]$VTYTimeoutSec = [convert]::ToInt32($VTYTimeoutSec, 10)
+
+            if ($VTYTimeoutMin -eq 0 -and $VTYTimeoutSec -eq 0)
+            { $VTYTimeoutCtr = 1}
+
+            if ($VTYTimeoutMin -ge 10 -and $VTYTimeoutSec -gt 0)
+            { $VTYTimeoutExceed = 1}
+        }
+
+        #V-3967: check the timeout of the console interface
+        if ($line -match "^line con 0")
+        {
+            $ConFound = 1;
+        }
+
+        if ($line -match "exec\-timeout" -and $ConFound -eq 1)
+        { 
+            $CONTimeoutFound = $CONTimeoutFound + 1;
+            $CONTimeout = $line -match "\d+\s\d+$";
+            $CONTimeout = $Matches[0];
+            $CONTimeoutSplit = $CONTimeout.Split(" ");
+            $CONTimeoutMin = $CONTimeoutSplit[0];
+            $CONTimeoutSec = $CONTimeoutSplit[1];
+            [int]$CONTimeoutMin = [convert]::ToInt32($CONTimeoutMin, 10)
+            [int]$CONTimeoutSec = [convert]::ToInt32($CONTimeoutSec, 10)
+
+            if ($CONTimeoutMin -eq 0 -and $CONTimeoutSec -eq 0)
+            { $CONTimeoutCtr = 1}
+
+            if ($CONTimeoutMin -ge 10 -and $CONTimeoutSec -gt 0)
+            { $CONTimeoutExceed = 1}
+
+        }
+
+        #V-3070: Log managment connections for extended acl
+        if ($line -match "^ip access-list extended" -or $line -match "^!")
+        {   $ACLFound = 0}
+
+        if ($line -match "^ip access-list extended ACL-FILTER-VTY$")
+        {   $ACLFound = $ACLFound + 1;}
+
+        if ($line -match "^ permit .+ log$" -and $ACLFound -eq 1)
+        {   $MngConLogPmt = $MngConLogPmt + 1}
+
+        if ($line -match "^ permit .+$" -and $ACLFound -eq 1)
+        {   $MngConTotalPmt = $MngConTotalPmt +1}
+
+        if ($line -match "^ deny .+ log$" -and $ACLFound -eq 1)
+        {   $MngConLogDny = $MngConLogDny + 1}
+
+        if ($line -match "deny .+$" -and $ACLFound -eq 1) 
+        {   $MngConTotalDny = $MngConTotalDny +1}
+        
+        #V-5612: SSH Timeout convert to integer
+        [int]$SSHTimeout = [convert]::ToInt32($SSHTimeout, 10)
+
+        #V-5613: SSH Retries convert to integer
+        if ($SSHRetryFound -eq 1)
+        {[int]$SSHRetries = [convert]::ToInt32($SSHRetries, 10)}
+        
+        #V-5646: Syn Wait time convert to integer        
+        [int]$SynWaitTime = [convert]::ToInt32($SynWaitTime, 10)  
+        
+        #V-7011 Aux Port is disabled
+        if ($line  -match "^line aux")
+        { $AuxFound = 1}
+
+        if ($line -match "^ no exec" -and $AuxFound -eq 1)
+        { $AuxDisabled = 1}
+
+        #V-14667: Rotating keys expire less than 180 days
+            #Find difference in current date and accept key date
+        if ($line -match "^   accept-lifetime .+\d+$" -or $line -match "^  accept-lifetime .+\d+$")
+        {
+            $KeyFoundA = 1
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            $TimeNow = Get-Date
+            $KeyDiffA = $KeyDate2.Date - $TimeNow.Date
+
+            if ($KeyDiffA -gt 180)
+            { $KeyExceedA = 1}
+            
+            if ($KeyDiffA -lt 0)
+            { $KeyExpiredA = 1}      
+        }
+
+            #Find difference in current date and send key date
+        if ($line -match "^   send-lifetime .+\d+$"-or $line -match "^  send-lifetime .+\d+$" )
+        {
+            $KeyFoundS = 1
+            $KeyDate2 = $line -match "\w+\s\d+\s\d+$"
+            $KeyDate2 = $Matches[0]
+
+            $KeyDate2= [datetime]$KeyDate2
+            $TimeNow = Get-Date
+            $KeyDiffS = $KeyDate2.Date - $TimeNow.Date
+
+            if ($KeyDiffS -gt 180)
+            { $KeyExceedS = 1}
+            
+            if ($KeyDiffS -lt 0)
+            { $KeyExpiredS = 1}    
+        }
+
+        #V-14676 Netflow sourced from loopback
+        if ($line -match "^flow exporter")
+        {$FlowFound = 1}
+
+        if ($line -match "^ source Loopback" -and $FlowFound -eq 1)
+        {
+            $LoopFlow = 1;
+            $FlowFound = 0
+        }
+
+        #V-14681 iBGP peers use loopback interface as the source address
+        if ($line -match "^router bgp")
+        { $RouterBGP = 1}
+
+        if ($RouterBGP -eq 1  -and $line -match "neighbor \d+\.\d+\.\d+\.\d+ update-source Loopback")
+        { $LoopRouterBGP = 1}
+
+        #V-15432 Two separate authentication servers
+        if ($line -match "aaa group server tacacs+")
+        { $AAAServerGroup = 1}
+
+        if ($line -match "^ server \d+\.\d+\.\d+\.\d+" -and $AAAServerGroup -eq 1)
+        { $AAASeverCount = $AAASeverCount + 1}
+
+        if ($line -match "^ server-private \d+\.\d+\.\d+\.\d+" -and $AAAServerGroup -eq 1)
+        { $AAASeverCount = $AAASeverCount + 1}
+
+        #V-17832 management vlan configured with an IP address from  the management network address block
+        if ($line -match "^interface vlan41" -or $line -match "^interface vlan888" -or $line -match "^interface Loopback90" -or $line -match "^interface Loopback0")
+        { $MgmtIntFound = 1}
+
+        if ($line -match "^ ip address \d+\.\d+\.\d+\.\d+" -and $MgmtIntFound -eq 1)
+        { $MgmtIntFound = 2}
+
+        if ($line -match "\!" -and $MgmtIntFound -eq 1)
+        { $MgmtIntFound = 0}
+
+        if ($line -match "^interface (tengiga|vlan|gig|ether|fast)")
+        {
+            $Intfound = $Intfound + 1
+            $ExclamCtr = 0
+            $IntType = $line
+        }
+
+        if ($line -match "^ ip pim sparse-dense-mode")
+        { $MulticastInt = $MulticastInt +1}
+
+        if ($line -match "^ ip pim neighbor-filter")
+        { $MulticastFilter = $MulticastFilter +1}
+
+
+        #V-3971 Access port in VLAN 1
+        if ($line -match "^ switchport access vlan 1$")
+        { $AccessVlan1 = 1}
+
+        #V-3972 VLAN 1 allowed on Trunk
+        if ($line -match "^ switchport trunk allowed .+ 1\,")
+        { $TrunkAllVlan1 = 1}
+
+        #V-3973 Shutdown ports in unused VLAN (999)
+        if ($line -match "^interface (tengiga|vlan|gig|ether|fast)")
+        {
+            $IntMatch = 1
+            $ExclamCtr = 0
+        }
+
+        if ($line -match "^ switchport access vlan \d*$")
+        {
+             
+             $sw_ac_vl = $line -match "\d+$"
+             $sw_ac_vl = $Matches[0]
+             [int]$sw_ac_vl = [convert]::ToInt32($sw_ac_vl, 10)
+        }
+
+        if ($line -match "^ switchport mode access")
+        {
+             $AccessVlan = 1
+        }
+        
+        #V-5623 Trunking disabled on all access ports
+        if ($line -match "^ switchport trunk allowed")
+        { $SwPtTrkAll = 1  }  
+
+        if ($line -match "^ shutdown")
+        {
+            $Shut = 1
+        }
+
+        if ($line -match "!" -and $AccessVlan -eq 1 -and $Shut -eq 1 -and $sw_ac_vl -ne 999)
+        {
+            $ShutVL999 = 1
+            $AccessVlan = 0
+            $Shut = 0
+            $sw_ac_vl = 0
+        }
+
+        if ($AccessVlan -eq 1 -and $SwPtTrkAll -eq 1)
+        {
+            $SwPtTrkEn = 1
+        }
+
+        if ($line -match "!" -and $IntMatch -ne 0)
+        { 
+            $IntMatch = 0
+            $ShutVL999 = 0
+            $AccessVlan = 0
+            $SwPtTrkAll = 0
+            $Shut = 0
+            $sw_ac_vl = 0
+        }
+
+        #V-18544 Print VLAN
+        if ($line -match "^vlan")
+        {
+            $VlanFound = 1
+            $PrintVlan = $line
+            #$PrintVlan = $line -match "\d+$"
+            #$printVlan = $Matches[0]
+            #[int]$PrintVlan = [convert]::ToInt32($PrintVlan, 10)
+        }
+        
+        if ($line -match "^ name PRINT")
+        {
+            $PrintFound = 1
+        }
+
+        if ($line -match "!" -and $VlanFound -eq 1 -and $PrintFound -eq 1)
+        {
+            $PrinterCheck = 1
+            $VlanFound = 0
+            $PrintFound = 0
+        }
+
+        #V-18566 Port Security Max
+        if ($line -match "switchport port-security maximum")
+        {
+            $PortMax = $line
+            $PortMax = $line -match "\d+$"
+            $PortMax = $Matches[0]
+            #[int]$PortMax = [convert]::ToInt32($PortMax, 10)
+
+            if ($PortMax -gt 1)
+            { $PortMaxSec = 1}
+         } 
+
+        #V-3984 Access port assigned to Native VLAN 55
+        if ($line -match "^ switchport access vlan 55$")
+        { $NativeVlan55 = 1}
+
+        if ($line -match "^ switchport trunk native vlan \d+$")
+        {
+            $NativeChk = $line
+            $NativeChk = $NativeChk -match "\d+$"
+            $NativeChk = $Matches[0]
+
+            if ($NativeChk -eq 1)
+            { $NativeVal = 1}
+
+        }
+
+        #V-3000 Log all ACL deny statements
+        if ($line -match "^ip access-list extended")
+        { $ACLDenyAll = 1 }
+
+        if ($line -match "^ip access-list extended COPP")
+        { $ACLDenyAll = 2 }
+
+        if ($line -match "^ deny" -and $ACLDenyAll -eq 1)
+        { $ACLCounter = $ACLCounter + 1}
+
+        if ($line -match "^ deny .+ log$" -and $ACLDenyAll -eq 1)
+        { $ACLDenyCounter = $ACLDenyCounter + 1}
+
+        if ($line -match "^access-list \d+ deny .+$")
+        { $ACLCounter2 = $ACLCounter2 + 1}
+
+        if ($line -match "^access-list \d+ deny .+ log$")
+        { $ACLDenyCounter2 = $ACLDenyCounter2 + 1}
+
+        if ($line -match "!" -and $ACLDenyAll -ne 0)
+        { $ACLDenyAll = 0 }
+
+        #V-17833 ACL on management VLAN out
+        if ($line -match "^interface vlan")
+        { $IntVLANMatch = 1}
+
+        if ($line -match "^ ip access-group .+ out$" -and $IntVLANMatch -eq 1)
+        { $MNGACLOUT = 1}
+
+        if ($line -match "^!"-and $IntVLANMatch -eq 1)
+        { 
+            $IntVLANMatch = 0
+            $ServerACL = 0
+            $PrintACL = 0
+        }
+
+        if ($line -match "^ ip access-group .+ in$" -and $IntVLANMatch -eq 1)
+        { $MNGACLIN = 1}
+
+        #V-17836/V-17837 classmark management vlan traffic
+        if ($line -match "^service-policy input" -and $IntMatch -eq 1)
+        { $ClassMarkTraffic = 1}
+
+        #V-18522 Server Vlan managment
+        if ($line -match "^interface (vlan43|vlan12|vlan607)")
+        { $IntServerMatch = 1}
+
+        if ($line -match "^ ip access-group" -and $IntServerMatch -eq 1)
+        { $ServerACL = 1}
+
+        if ($line -match "interface vlan45")
+        { $IntPrintMatch = 1}
+
+        if ($line -match "^ ip access-group" -and $IntPrintMatch -eq 1)
+        {$PrintACL = 1}
+
+
+       
+    }
+    
+    $PasswordTotal = $EnableSecret + $AAAuthentication
+
+  
+    if ($ACLCounter -ne $ACLDenyCounter -or $ACLCounter2 -ne $ACLDenyCounter2)
+    { Write-Host $ACLDenyOpenMessage}
+
+    if ($ACLCounter -eq $ACLDenyCounter -and $ACLCounter2 -eq $ACLDenyCounter2)
+    { Write-Host $ACLDenyMessage}
+
+    Write-Host $IPSECOOBMessage
+    
+    if ($EnableSecret -eq 0)
+    { write-host $EnableSecretMessage}
+
+    if ($AAAuthentication -eq 0)
+    { write-host $AAAuthenticationMessage}
+
+    if ($PasswordTotal -eq 2)
+    { Write-Host $PasswordProtectMessage}
+
+    $BannerTotal = $MOTDBanner + $LOGINBanner + $EXECBanner
+
+    if ($MOTDBanner -eq 0)
+    { write-host $MOTDMessage}
+
+    if ($LOGINBanner -eq 0)
+    { Write-Host $LOGINMessage}
+
+    if ($EXECBanner -eq 0)
+    { Write-Host $EXECMessage}
+
+    if ($BannerTotal -eq 3) 
+    { Write-Host $BannerTotalMessage}
+
+    if ($VTYFound -ne $VTYTimeoutFound)
+    {Write-Host $VTYTimeoutMissingMessage}
+
+    if ($VTYTimeoutCtr -gt 0)
+    {Write-Host $VTYTimeoutNotSetMessage}
+
+    if ($VTYTimeoutExceed -gt 0)
+    {Write-Host $VTYTimeoutExceedMessage}
+
+    if ($VTYFound -eq $VTYTimeoutFound -and $VTYTimeoutCtr -eq 0 -and $VTYTimeoutExceed -eq 0 )
+    {write-host $VTYTimeoutMessage}
+
+    if ($DomainLookup -ne 0)
+    {Write-Host $DomainLookupMessage}
+
+    if ($DomainLookup -eq 0)
+    {Write-Host $DomainLookupNotDisabledMessage}
+
+    if ($SNMPString -eq 1 -and $SNMPACL -eq 1)
+    {Write-Host $SNMPV3Message}
+
+    if ($SNMPString -eq 0)
+    {Write-Host $SNMPNotV3Message}
+
+    if ($SNMPACL -eq 0)
+    {Write-Host $SNMPACLMessage}
+
+    if ($RtrEigrp -eq 1 -and $EIGRPModeCtr -eq $EIGRPKeyChnCtr)
+    {Write-Host $EIGRPAuthenMessage}
+
+    if ($RtrEigrp -eq 1 -and $EIGRPModeCtr -ne $EIGRPKeyChnCtr)
+    {Write-Host $EIGRPAuthenOpenMessage}
+
+    if ($SNMPString -eq 1)
+    {Write-Host $SNMPAccessMessage}
+
+    if ($SNMPString -eq 0)
+    {Write-Host $SNMPAccessNotMessage}
+
+    if ($UserNameCount -eq 1)
+    {Write-Host $GroupAccountMessage}
+
+    if ($UserNameCount -eq 0)
+    {Write-Host $NoLocalAccounts}
+
+    if ($UserNameCount -ge 2)
+    {Write-Host $GroupAccountTooManyMessage}
+
+    $AuthTotal = $Auth0 + $Auth1 + $Auth15
+
+    if ($AuthTotal -eq 3)
+    {write-host $LeastPriv}
+
+    if ($Auth0 -eq 0)
+    {Write-Host $Auth0Message}
+
+    if ($Auth1 -eq 0)
+    {write-host $Auth1Message}
+
+    if ($Auth15 -eq 0)
+    {write-host $Auth15Message}
+
+    Write-Host $UnauthAcctsMessage
+
+    if ($PassEncryptTotal -eq 1)
+    {Write-Host $PassEncryptMessage}
+
+    if ($PassEncryptTotal -eq 0)
+    {write-host $PassNoEncryptMessage}
+
+    $FIPSTotal = $SSHCheck + $SCPCheck + $NoHTTPCheck + $NoSecHTTPCheck + $SecHttpCheck
+
+    if ($FIPSTotal -eq 4)
+    {Write-Host $FIPSMessage}
+
+    if ($SSHCheck -eq 0)
+    {Write-Host $SSHMissingMessage}
+
+    if ($SCPCheck -eq 0)
+    {Write-Host $SCPMissingMessage}
+
+    if ($HTTPCheck -eq 1)
+    {write-host $HTTPPresMessage}
+
+    if ($MngConLogPmt -eq $MngConTotalPmt -and $MngConLogDny -eq $MngConTotalDny)
+    {write-host $MngConMessage}
+
+    if ($MngConLogPmt -ne $MngConTotalPmt)
+    {write-host $MngConPmtMessage}
+
+    if ($MngConLogDny -ne $MngConTotalDny)
+    {Write-Host $MngConDenyMessage}
+
+    write-host $ConfigSyncMessage
+
+    if ($SmallServers -eq 0)
+    {Write-Host $SmallServerMessage}
+
+    if ($SmallServers -ne 0)
+    {write-host $SmallServerNotMessage}
+
+    if ($IPFinger -eq 0)
+    {Write-Host $IPFingerMessage}
+
+    if ($IPFinger -ne 0)
+    {Write-Host $IPFingerOpen}
+
+    if ($AutoLoad1 -eq 1)
+    {Write-Host $AutoLoadOpenMessage}
+
+    if ($AutoLoad1 -eq 0)
+    {Write-Host $AutoLoadMessage}
+
+    if ($IPSoureRte -eq 1)
+    {Write-Host $IPSourceMessage}
+
+    if ($IPSoureRte -ne 1)
+    {Write-host $IPSourceOpenMessage}
+
+    if ($IPDirected -eq 1)
+    {Write-Host $IPDirectedOpenMessage}
+
+    if ($IPDirected -eq 0)
+    {write-host $IPDirectedMessage}
+
+    if ($HTTPCheck -eq 1)
+    {write-host $HTTPOpenMessage}
+
+    if ($HTTPCheck -eq 0)
+    {write-host $HTTPMessage}
+    
+    if ($IPBoot -eq 1)
+    {Write-Host $IPBootOpenMessage}
+    
+    if ($IPBoot -eq 0)
+    {write-host $IPBootMessage} 
+    
+    if ($EnableSecret -eq 0)
+    {write-host $DefaultPassOpenMessage}
+    
+    if ($EnableSecret -eq 1)
+    {Write-Host $DefaultPassMessage}
+    
+    if ($version -ge 15.0)
+    {Write-host $VersionMessage}
+    
+    if ($version -lt 15.0)
+    {write-host $VersionOpenMessage}
+    
+    if ($AAAuthentication -eq 0)
+    {Write-Host $AuthenMngmtOpenMessage}
+    
+    if ($AAAuthentication -eq 1)
+    {Write-Host $AuthenMngmtMessage} 
+    
+    if ($SNMPv3Chk -eq 1)
+    {Write-Host $SNMPSecureMessage}
+    
+    if ($SNMPv3Chk -eq 0)
+    {Write-Host $SNMPSecureOpenMessage}
+    
+    if ($SNMPString -eq 1)
+    {write-host $SNMPDefaultMessage}
+    
+    if ($SNMPString -eq 0)
+    {Write-Host $SNMPDefaultOpenMessage}  
+
+    if ($UserNameCount -eq 1)
+    {Write-Host $LocalAcctMessage}
+
+    if ($UserNameCount -eq 0)
+    {Write-Host $LocalAcctOpenMessage2}
+
+    if ($UserNameCount -ge 2)
+    {Write-Host $LocalAcctOpenMessage}
+
+    if ($CONTimeoutCtr -gt 0)
+    {Write-Host $CONTimeoutNotSetMessage}
+
+    if ($CONTimeoutExceed -gt 0)
+    {Write-Host $CONTimeoutExceedMessage}
+
+    if ($CONTimeoutFound -eq 0)
+    {Write-Host $CONTimeoutMissingMessage}
+
+    if ($CONTimeoutCtr -eq 0 -and $CONTimeoutExceed -eq 0 -and $CONTimeoutFound -eq 1 )
+    {write-host $CONTimeoutMessage}
+
+    if ($SNMPString -eq 1)
+    {Write-Host $SNMPReadMessage}
+
+    if ($SNMPString -eq 0)
+    {Write-Host $SNMPReadOpenMessage}
+
+    if ($AccessVlan1 -eq 1)
+    {Write-Host $AccessVlan1OpenMessage}
+
+    if ($AccessVlan1 -eq 0)
+    {Write-Host $AccessVlan1Message}
+
+    if ($TrunkAllVlan1 -eq 1)
+    {Write-Host $TrunkAllVlanOpenMessage}
+
+    if ($TrunkAllVlan1 -eq 0)
+    {Write-Host $TrunkAllVlanMessage}
+
+    if ($ShutVL999 -eq 0)
+    {Write-Host $ShutVL999Message}
+
+    if ($ShutVL999 -eq 1)
+    {Write-Host $ShutVL999OpenMessage}
+
+    if ($NativeVlan55 -eq 0)
+    {Write-Host $NativeVLAN55Message}
+
+    if ($NativeVlan55 -eq 1)
+    {Write-Host $NativeVLAN55OpenMessage}
+
+    if ($AAAuthentication -eq 1)
+    {Write-Host $CONAuthMessage}
+
+    if ($AAAuthentication -eq 0)
+    {Write-Host $CONAuthOpenMessage}
+
+    if ($LogTrap -eq 1)
+    {Write-Host $LogTrapOpenMessage}
+
+    if ($LogTrap -eq 0 -and $LogHost -gt 1)
+    {write-host $LogTrapMessage}
+
+    if ($LogHost -le 1)
+    {Write-Host $LogHostOpenMessage}
+
+    if ($VTYFound -eq $VTYFilter)
+    {Write-Host $VTYACLMessage}
+
+    if ($VTYFound -ne $VTYFilter)
+    {Write-Host $VTYACLMissingMessage}
+
+    if ($SSHTimeout -gt 60)
+    {Write-Host $SSHTimeoutOpenMessage1}
+
+    if ($SSHTimeFound -eq 0)
+    {Write-Host $SSHTimeoutOpenMessage2}
+
+    if ($SSHTimeout -le 60 -and $SSHTimeFound -eq 1)
+    {Write-Host $SSHTimeoutMessage}
+
+    if ($SSHRetryFound -eq 1 -and $SSHRetries -le 3)
+    {Write-Host $SSHRetriesMessage}
+
+    if ($SSHRetryFound -eq 0)
+    {Write-Host $SSHRetriesMessage}
+
+    if ($SSHRetryFound -eq 1 -and $SSHRetries -gt 3)
+    {write-host $SSHRetriesOpenMessage}
+
+    if ($PadService -eq 0)
+    {write-host $PadServiceMessage}
+
+    if ($PadService -eq 1)
+    {write-host $PadServiceOpenMessage}
+
+    if ($KeepAlives -eq 0)
+    {Write-Host $KeepAliveOpenMessage}
+
+    if ($KeepAlives -eq 1)
+    {Write-Host $KeepAliveMessage}
+
+    if ($IPIdentd -eq 1)
+    {Write-Host $IPIdentdOpenMessage}
+
+    if ($ipidentd -eq 0)
+    {write-host $IPIdentdMessage}
+
+    if ($GratARPs -eq 1)
+    {Write-Host $GratARPSOpenMessage}
+
+    if ($GratARPs -eq 0)
+    {Write-Host $GratARPSMessage}
+
+    if ($NativeVal -eq 1)
+    {write-host $NativeChkOpenMessage}
+
+    if ($NativeVal -eq 0)
+    {Write-Host $NativeChkMessage}
+
+    if ($SwPtTrkEn -eq 1)
+    {Write-Host $SwPtTrkEnOpenMessage}
+
+    if ($SwPtTrkEn -eq 0)
+    {Write-Host $SwPtTrkEnMessage}
+
+    if ($Dot1xTO -eq 1)
+    {Write-Host $Dot1xMessage}
+
+    if ($Dot1xTO -eq 0)
+    {Write-Host $Dot1xTOpenMessage}
+
+    if ($Dot1xAuth -eq 1)
+    {write-host $Dot1xAuthMessage}
+
+    if ($Dot1xAuth -eq 0)
+    {Write-Host $Dot1xAuthOpenMessage}
+
+    if ($NativeVal -eq 1)
+    {Write-Host $ManVlanOpenMessage}
+
+    if ($NativeVal -ne 1)
+    {Write-Host $ManVlanMessage}
+
+    if ($CEFFound -eq 0)
+    {Write-Host $CEFOpenMessage}
+
+    if ($CEFFound -eq 1)
+    {Write-Host $CEFMessage}
+
+    if ($SynWait -eq 0)
+    {Write-Host $SynWaitOpenMessage1}
+
+    if ($SynWaitTime -gt 10 -and $SynWait -eq 1)
+    {Write-Host $SynWaitOpenMessage2}
+
+    if ($SynWaitTime -le 10 -and $SynWait -eq 1)
+    {write-host $SynWaitMessage}
+
+    if ($LifeTimeKeyA -eq 0 -and $KeyFoundA -eq 1)
+    {Write-Host $LifeTimeKeyOpenMessageA}
+
+    if ($LifeTimeKeyS -eq 0 -and $KeyFoundA -eq 1)
+    {Write-Host $LifeTimeKeyOpenMessageS}
+
+    if ($LifeTimeKeyA -eq 1 -and $LifeTimeKeyS -eq 1 -and $KeyFoundA -eq 1)
+    {Write-Host $LifeTimeKeyMessage}
+
+    if ($LifeTimeKeyA -eq 0 -and $LifeTimeKeyS -eq 0 -and $KeyFoundA -eq 0)
+    {Write-Host $LifeTimeKeyMessage}
+
+    if ($AuxFound -eq 1 -and $AuxDisabled -eq 0)
+    {Write-Host $AuxDiabledOpenMessage}
+
+    if ($AuxFound -eq 1 -and $AuxDisabled -eq 1)
+    {Write-Host $AuxDiabledMessage}
+
+    if ($AuxFound -eq 0 -and $AuxDisabled -eq 0)
+    {Write-Host $AuxDiabledMessage}
+
+    if ($KeyExceedA -eq 1 -and $KeyFoundA -eq 1)
+    {Write-Host $KeyRotateOpenMessageA1}
+
+    if ($KeyExpiredA -eq 1 -and $KeyFoundA -eq 1)
+    {Write-Host $KeyRotateOpenMessageA2}
+
+    if ($KeyExceedS -eq 1 -and $KeyFoundS -eq 1)
+    {Write-Host $KeyRotateOpenMessageS1}
+
+    if ($KeyExpiredS -eq 1 -and $KeyFoundA -eq 1)
+    {Write-Host $KeyRotateOpenMessageS2}
+
+    if ($KeyExceedS -eq 0 -and $KeyExpiredS -eq 0 -and $KeyFoundS -eq 1 -and $KeyExceedA -eq 0 -and $KeyExpiredA -eq 0 -and $KeyFoundA -eq 1)
+    {Write-Host $KeyRotateMessage}
+
+    if ($KeyFoundS -eq 0 -and $KeyFoundA -eq 0)
+    {Write-Host $KeyRotateMessage}
+
+    if ($BSDrEnabled -eq 0)
+    {Write-Host $BSDrMessage}
+
+    if ($BSDrEnabled -eq 1)
+    {Write-Host $BSDrOpenMessage}
+
+    if ($NTPAuthenKey -eq 0)
+    {write-host $NTPAuthenOpenMessage1}
+
+    if ($NTPAuthen -eq 0)
+    {write-host $NTPAuthenOpenMessage2}
+    
+    if ($NTPTrustKey -eq 0)
+    {Write-Host $NTPAuthenOpenMessage3}
+    
+    if ($NTPAuthenKey -eq 1 -and $NTPAuthen -eq 1 -and $NTPTrustKey -eq 1)
+    {write-host $NTPAuthenMessage} 
+
+    if ($LoopTacRad -eq 0)
+    {Write-Host $LoopTacRadOpenMessage}
+
+    if ($LoopTacRad -eq 1)
+    {Write-Host $LoopTacMessage}
+
+    if ($LoopSyslog -eq 0)
+    {Write-Host $LoopSyslogOpenMessage}
+
+    if ($LoopSyslog -eq 1)
+    {Write-Host $LoopSysMessage}
+
+    if ($LoopNTP -eq 0)
+    {Write-Host $LoopNTPOpenMessage}
+
+    if ($LoopNTP -eq 1)
+    {Write-Host $LoopNTPMessage}
+
+    if ($LoopSNMP -eq 0)
+    {Write-Host $LoopSNMPOpenMessage}
+
+    if ($LoopSNMP -eq 1)
+    {Write-Host $LoopSNMPMessage}
+
+    if ($LoopFlow -eq 0)
+    {Write-Host $LoopFlowOpenMessage}
+
+    if ($LoopFlow -eq 1)
+    {Write-Host $LoopFlowMessage}
+
+    if ($LoopTFTP -eq 0)
+    {Write-Host $LoopTFTPOpenMessage}
+
+    if ($LoopFTP -eq 0)
+    {Write-Host $LoopFTPOpenMessage}
+
+    if ($LoopFTP -eq 1 -and $LoopTFTP -eq 1)
+    {Write-Host $LoopFTPMessage}
+
+    if ($RouterBGP -eq 0)
+    {Write-Host $LoopBGPMessage}
+
+    if ($LoopRouterBGP -eq 1 -and $RouterBGP -eq 1)
+    {Write-Host $LoopBGPMessage}
+
+    if ($LoopRouterBGP -eq 0 -and $RouterBGP -eq 1)
+    {Write-Host $LoopBGPOpenMessage}
+
+    Write-Host $IPv6Message1
+    write-host $IPv6Message2
+    write-host $IPv6Message3
+
+    if ($SSHv2 -eq 0)
+    {Write-Host $SSHv2OpenMessage}
+
+    if ($sshv2 -eq 1)
+    {Write-Host $SSHv2Message}
+
+    Write-Host $IPv6Message5
+
+    if ($AAAServerGroup -eq 0)
+    {Write-Host $AAAServerOpenMessage2}
+
+    if ($AAAServerGroup -eq 1 -and $AAASeverCount -lt 2)
+    {Write-Host $AAAServerOpenMessage1}
+
+    if ($AAAServerGroup -eq 1 -and $AAASeverCount -ge 2)
+    {Write-Host $AAAServerMessage}
+
+    if ($EmergAccount -eq 0)
+    {Write-Host $EmergAccountOpenMessage}
+
+    if ($EmergAccount -eq 1)
+    {Write-Host $EmergAccountMessage}
+
+    Write-Host $OOBIpsecMessage1
+    Write-Host $OOBIpsecMessage2
+    Write-Host $OOBIpsecMessage3
+    Write-Host $OOBIpsecMessage4
+    Write-Host $OOBIpsecMessage5
+    Write-Host $OOBIpsecMessage6
+    Write-Host $OOBIpsecMessage7
+    #Write-Host $OOBIpsecMessage7a
+    Write-Host $OOBIpsecMessage8
+    Write-Host $OOBIpsecMessage9
+    Write-Host $OOBIpsecMessage10
+    Write-Host $OOBIpsecMessage11
+    Write-Host $OOBIpsecMessage12
+    Write-Host $OOBIpsecMessage13
+    Write-Host $OOBIpsecMessage14
+
+    if($MgmtIntFound -eq 0)
+    {Write-Host $MgmtIntOpenMessage}
+
+    if($MgmtIntFound -eq 2)
+    {Write-Host $MgmtIntMessage}
+
+    if($MNGACLOUT -eq 0)
+    {write-host $MgmtVlanOutOpenMessage}
+
+    if ($MNGACLOUT -eq 1)
+    {Write-Host $MgmtVlanOutMessage}
+
+    if ($MNGACLIN -eq 0)
+    {Write-Host $MgmtVlanInOpenMessage}
+
+    if ($MNGACLIN -eq 1)
+    {Write-Host $MgmtVlanINMessage}
+
+    write-host $TunnelNOCMessage
+
+    if ($ClassMarkTraffic -eq 0)
+    {Write-Host $ClassMarkOpenMessage}
+
+    if ($ClassMarkTraffic -eq 1)
+    {Write-Host $ClassMarkMessage}
+
+    if ($ClassMarkTraffic -eq 0)
+    {Write-Host $ClassMarkOpenMessage2}
+
+    if ($ClassMarkTraffic -eq 1)
+    {Write-Host $ClassMarkMessage2}
+
+    if ($ServerACL -eq 1)
+    {Write-Host $ServerACLMessage1}
+
+    if ($ServerACL -eq 0)
+    {Write-Host $ServerACLOpenMessage1}
+
+    if ($ServerACL -eq 1)
+    {Write-Host $ServerACLMessage2}
+
+    if ($ServerACL -eq 0)
+    {Write-Host $ServerACLOpenMessage2}
+ 
+    if($PrinterCheck -eq 0)
+    {write-host $PrintOpenMessage}
+
+    if($PrinterCheck -eq 1)
+    {Write-Host $PrintMessage}
+
+    if($PrintACL -eq 1)
+    {Write-Host $PrintACLMessage}
+
+    if($PrintACL -eq 0)
+    {Write-Host $PrintACLOpenMessage}
+
+    if($PortSec -eq 1)
+    {Write-Host $PortSecOpenMessage}
+
+    if ($PortSec -eq 0)
+    {Write-Host $PortSecMessage}
+
+    if ($PortMaxSec -eq 0)
+    {Write-Host $PortMaxSecMessage}
+
+    if ($PortMaxSec -eq 1)
+    {Write-Host $PortMaxSecOpenMessage}
+
+    $DefltRteTun = $RtrEigrp + $TunlFound + $DefltRoute
+
+    if ($DefltRteTun -eq 3)
+    {Write-Host $TunDfltOpenMessage}
+
+    if ($DefltRteTun -ne 3)
+    {Write-Host $TunDfltMessage}
+
+    $CPPTotal = $CPPFound + $CPPServPol + $CPPACL + $CPPPolMap
+
+    if ($CPPTotal -eq 4)
+    {Write-Host $CPPMessage}
+
+    if ($CPPFound -eq 0)
+    {Write-Host $CPPOpenMessage4}
+
+    if ($CPPServPol -eq 0)
+    {Write-Host $CPPOpenMessage2}
+
+    if ($CPPPolMap -eq 0)
+    {Write-Host $CPPOpenMessage3}
+
+    if ($CPPACL -eq 0)
+    {Write-Host $CPPOpenMessage1}
+
+    if($MCastBound -eq 1 -and $MulticastInt -ge 1)
+    {Write-Host $McastBoundMessage1}
+
+    if($MCastBound -eq 0 -and $MulticastInt -eq 0)
+    {Write-Host $McastBoundMessage2}
+
+    if($MCastBound -eq 0 -and $MulticastInt -ge 1)
+    {Write-Host $McastBoundOpenMessage}
+
+    if ($NTPServCount -lt 2)
+    {Write-Host $NTPServerOpenMessage}
+
+    if ($NTPServCount -ge 2)
+    {Write-Host $NTPServerMessage}
+
+    if ($CallHome -eq 0)
+    {Write-Host $CallHomeMessage}
+
+    if ($CallHome -eq 1)
+    {Write-Host $CallHomeOpenMessage}
+
+    if ($MulticastR -eq 0 -and $MulticastInt -eq 0)
+    {Write-Host $MulticastRteMessage1}
+
+    if ($MulticastR -eq 1 -and $MulticastInt -gt 0)
+    {Write-Host $MulticastRteMessage2}
+
+    if ($MulticastR -eq 0 -and $MulticastInt -gt 0)
+    {Write-Host $MulticastRteMessage3}
+
+    if ($MulticastR -eq 1 -and $MulticastInt -gt 0 -and $MulticastFilter -eq 0)
+    {Write-Host $MulticastFilterOpenMessage}
+
+    if ($MulticastR -eq 1 -and $MulticastInt -ge 1 -and $MulticastFilter -ge 1)
+    {Write-Host $MulticastFilterMessage2}
+
+    if ($MulticastR -eq 0 -and $MulticastFilter -eq 0)
+    {Write-Host $MulticastFilterMessage1}
+
+    if ($IGMPv3 -eq 0)
+    {Write-Host $IGMPv3Message}
+
+    if ($IGMPv3 -eq 1 -and $SSM -eq 0)
+    {Write-Host $IGMPv3OpenMessage}
+
+    if ($IGMPv3 -eq 1 -and $SSM -eq 1)
+    {Write-Host $IGMPv3Message2}
+
+    Write-Host $IPv6MaxHopMessage
+    Write-Host $IPv6to4Message1
+    Write-Host $IPv6to4Message2
+    Write-Host $L2TPAuthenMessage
+    write-host $BGPAuthenMessage
+    
+
+}
